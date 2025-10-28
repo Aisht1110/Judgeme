@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Social Verdict — Judge Friendships, Relationships & More</title>
+  <meta name="description" content="Play the ultimate social game to judge friendships, relationships, character traits, and more. Cast your vote and compare your verdict with the world." />
+  <meta name="theme-color" content="#6D28D9" />
+  <meta name="color-scheme" content="light" />
+  <meta property="og:title" content="The Social Verdict" />
+  <meta property="og:description" content="Judge friendships, relationships & more — see how your verdict stacks up." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter + Outfit for headers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind Config -->
+  <script>
+    window.tailwind = window.tailwind || {};
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'Inter', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            'brand-purple': '#6D28D9',
+            'brand-pink': '#EC4899',
+            'brand-yellow': '#F59E0B',
+            'brand-indigo': '#4F46E5',
+          },
+          animation: {
+            'gradient': 'gradient 12s ease infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-glow': 'pulse-glow 1.6s infinite',
+            'slide-up': 'slide-up 0.6s ease-out',
+            'fade-in': 'fade-in 0.8s ease-out',
+            'bounce-subtle': 'bounce-subtle 2s infinite',
+            'shine': 'shine 3s linear infinite',
+          },
+          keyframes: {
+            gradient: {
+              '0%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+              '100%': { backgroundPosition: '0% 50%' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-14px)' },
+            },
+            'pulse-glow': {
+              '0%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.45)' },
+              '70%': { boxShadow: '0 0 0 12px rgba(245, 158, 11, 0)' },
+              '100%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0)' },
+            },
+            'slide-up': {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            'bounce-subtle': {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            'shine': {
+              '0%': { left: '-100%' },
+              '100%': { left: '200%' },
+            },
+          },
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom CSS -->
+  <style>
+    /* Base */
+    html { scroll-behavior: smooth; }
+    body { font-feature-settings: "rlig" 1, "calt" 1; }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 16px;
+      background: #111827;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: top .2s ease;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 16px; outline: 2px solid #F59E0B; outline-offset: 2px; }
+
+    /* Focus visible */
+    :focus-visible { outline: 3px solid rgb(245, 158, 11); outline-offset: 2px; border-radius: 6px; }
+
+    /* Hero gradient animation */
+    .hero-gradient {
+      background: linear-gradient(135deg, #4F46E5, #6D28D9, #EC4899, #F59E0B);
+      background-size: 300% 300%;
+      animation: gradient 12s ease infinite;
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Shine effect */
+    .shine-effect {
+      position: relative;
+      overflow: hidden;
+    }
+    .shine-effect::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 3s infinite;
+      pointer-events: none;
+    }
+
+    /* Card hover lift */
+    .card-lift {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-lift:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Judge card special effects */
+    .judge-card {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    }
+    .judge-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, #4F46E5, #EC4899, #F59E0B);
+      border-radius: 1.25rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+    }
+    .judge-card:hover::before {
+      opacity: 1;
+    }
+    .judge-card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 30px 60px -15px rgba(109, 40, 217, 0.35);
+    }
+
+    /* Rank badge glow */
+    .rank-glow-1 {
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
+      animation: pulse-glow 2s infinite;
+    }
+    .rank-glow-2 {
+      box-shadow: 0 0 15px rgba(156, 163, 175, 0.5);
+    }
+    .rank-glow-3 {
+      box-shadow: 0 0 15px rgba(180, 83, 9, 0.5);
+    }
+
+    /* Section spacing */
+    .section-padding { padding-top: 5rem; padding-bottom: 5rem; }
+    @media (min-width: 768px) {
+      .section-padding { padding-top: 7rem; padding-bottom: 7rem; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-gradient, .animate-float, .animate-pulse-glow, .shine-effect::before { animation: none !important; }
+      html { scroll-behavior: auto; }
+      .card-lift:hover, .judge-card:hover { transform: none; }
+    }
+
+    /* Back-to-top */
+    .back-to-top { 
+      opacity: 0; 
+      transform: translateY(8px); 
+      pointer-events: none; 
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+    .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    /* Stat counter animation */
+    .stat-number {
+      display: inline-block;
+      animation: fade-in 1s ease-out, bounce-subtle 2s infinite 1s;
+    }
+
+    /* Category card image zoom */
+    
+
+    /* Testimonial card */
+    .testimonial-card {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -10px rgba(109, 40, 217, 0.2);
+    }
+
+    /* Leaderboard table row hover */
+    .leaderboard-row {
+      transition: all 0.25s ease;
+    }
+    .leaderboard-row:hover {
+      background: linear-gradient(90deg, rgba(109, 40, 217, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+      transform: translateX(4px);
+    }
+
+    /* Button enhancements */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    .btn-primary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Progress bar animation */
+    .progress-bar {
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Modal backdrop blur */
+    .modal-backdrop {
+      backdrop-filter: blur(8px);
+      animation: fade-in 0.3s ease;
+    }
+
+    /* Scroll reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Icon pulse */
+    .icon-pulse {
+      animation: bounce-subtle 2s infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 via-purple-50/30 to-pink-50/30 font-sans antialiased">
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full z-50 py-3 md:py-4 px-4 md:px-8 transition-all duration-300 bg-transparent" role="banner">
+    <nav class="container mx-auto flex justify-between items-center text-white" role="navigation" aria-label="Primary">
+      <a href="#" class="text-2xl font-extrabold font-display flex items-center gap-2.5 hover:scale-105 transition-transform" aria-label="Home">
+        <div class="bg-white/15 backdrop-blur-sm p-2 rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 20h.01"></path><path d="M4 20h.01"></path><path d="M8 20h.01"></path><path d="M12 20h.01"></path><path d="M20 20h.01"></path><path d="m2 14 10-3 10 3"></path><path d="M2 10V6.5a2.5 2.5 0 0 1 5 0V10"></path><path d="M17 10V6.5a2.5 2.5 0 0 1 5 0V10"></path>
+          </svg>
+        </div>
+        <span class="tracking-tight">The Verdict</span>
+      </a>
+
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#how-it-works" class="font-semibold tracking-wide opacity-90 hover:opacity-100 hover:text-brand-yellow transition-all relative group">
+          How It Works
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#categories" class="font-semibold tracking-wide opacity-90 hover:opacity-100 hover:text-brand-yellow transition-all relative group">
+          Categories
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#testimonials" class="font-semibold tracking-wide opacity-90 hover:opacity-100 hover:text-brand-yellow transition-all relative group">
+          Testimonials
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#leaderboard" class="font-semibold tracking-wide opacity-90 hover:opacity-100 hover:text-brand-yellow transition-all relative group">
+          Leaderboard
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow transition-all group-hover:w-full"></span>
+        </a>
+      </div>
+
+      <a href="#play" class="hidden md:inline-block btn-primary bg-white text-gray-900 font-extrabold py-2.5 px-6 rounded-full shadow-xl hover:shadow-2xl hover:bg-gray-50 transition-all transform hover:scale-105" aria-label="Play now">
+        Play Now
+      </a>
+
+      <button id="mobile-menu-button" class="md:hidden glass text-white p-2.5 rounded-xl hover:bg-white/20 transition-all"
+              aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden fixed inset-0 bg-gray-900/96 backdrop-blur-md z-50" role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
+    <div class="relative h-full flex flex-col items-center justify-center space-y-8">
+      <h2 id="mobileMenuTitle" class="sr-only">Mobile menu</h2>
+      
+      <button id="mobile-menu-close" class="absolute top-6 right-6 glass text-white p-3 rounded-xl hover:bg-white/20 transition-all"
+              aria-label="Close menu" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <a href="#how-it-works" class="text-white text-3xl font-bold font-display hover:text-brand-yellow transition-colors hover:scale-110 transform">How It Works</a>
+      <a href="#categories" class="text-white text-3xl font-bold font-display hover:text-brand-yellow transition-colors hover:scale-110 transform">Categories</a>
+      <a href="#testimonials" class="text-white text-3xl font-bold font-display hover:text-brand-yellow transition-colors hover:scale-110 transform">Testimonials</a>
+      <a href="#leaderboard" class="text-white text-3xl font-bold font-display hover:text-brand-yellow transition-colors hover:scale-110 transform">Leaderboard</a>
+
+      <a href="#play" class="mt-6 btn-primary bg-brand-yellow text-gray-900 font-extrabold py-4 px-10 text-lg rounded-full shadow-2xl">Play Now</a>
+    </div>
+  </div>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="relative hero-gradient text-white pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
+      <!-- Decorative -->
+      <div class="absolute top-10 left-10 w-24 h-24 bg-white/10 rounded-full animate-float blur-xl" aria-hidden="true"></div>
+      <div class="absolute bottom-20 right-20 w-20 h-20 bg-white/10 rounded-full animate-float blur-xl" style="animation-delay:2s" aria-hidden="true"></div>
+      <div class="absolute top-1/3 right-1/4 w-16 h-16 bg-white/10 rounded-full animate-float blur-xl" style="animation-delay:4s" aria-hidden="true"></div>
+      <div class="absolute top-1/2 left-1/3 w-32 h-32 bg-white/5 rounded-full animate-float blur-2xl" style="animation-delay:1s" aria-hidden="true"></div>
+
+      <div class="container mx-auto px-4 text-center relative z-10">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight font-display animate-slide-up">
+          What's Your <span class="text-brand-yellow drop-shadow-lg">Verdict</span>?
+        </h1>
+        <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto font-medium opacity-95 animate-fade-in">
+          Judge friendships, relationship dilemmas, character traits, and spicy hot takes — then see how your call compares with everyone else. 
+        </p>
+
+        <div class="mt-12 flex flex-wrap justify-center gap-10 md:gap-16" aria-label="Game statistics">
+          <div class="text-center group">
+            <p class="text-4xl md:text-5xl font-black font-display stat-number group-hover:scale-110 transition-transform" aria-label="over one hundred thousand players">100K+</p>
+            <p class="text-sm md:text-base opacity-90 font-semibold mt-1">Players</p>
+          </div>
+          <div class="text-center group">
+            <p class="text-4xl md:text-5xl font-black font-display stat-number group-hover:scale-110 transition-transform" style="animation-delay: 0.2s" aria-label="over five hundred thousand verdicts">500K+</p>
+            <p class="text-sm md:text-base opacity-90 font-semibold mt-1">Verdicts</p>
+          </div>
+          <div class="text-center group">
+            <p class="text-4xl md:text-5xl font-black font-display stat-number group-hover:scale-110 transition-transform" style="animation-delay: 0.4s" aria-label="ninety five percent match rate">95%</p>
+            <p class="text-sm md:text-base opacity-90 font-semibold mt-1">Match Rate</p>
+          </div>
+        </div>
+
+        <div class="mt-14 flex flex-col sm:flex-row items-center justify-center gap-5">
+          <a id="primary-hero-cta" href="#play" class="inline-block btn-primary bg-brand-yellow text-gray-900 font-black py-5 px-10 md:px-12 text-lg md:text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all shine-effect">
+            Start Judging Now
+          </a>
+          <button id="open-sample" type="button" class="inline-flex items-center gap-3 glass text-white border border-white/30 font-bold py-5 px-8 md:px-10 text-lg rounded-full hover:bg-white/25 hover:scale-105 transition-all">
+            Try a sample
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-bounce-subtle"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <p class="mt-5 text-base opacity-90 font-medium">Free to play. No sign‑up required.</p>
+      </div>
+    </section>
+
+    
+
+   <!-- Categories Section - ENHANCED VERSION -->
+<section id="categories" class="section-padding bg-white relative overflow-hidden">
+  <!-- Decorative background elements -->
+  <div class="absolute top-0 right-0 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-30 -z-10" aria-hidden="true"></div>
+  <div class="absolute bottom-0 left-0 w-96 h-96 bg-pink-100 rounded-full blur-3xl opacity-30 -z-10" aria-hidden="true"></div>
+
+  <div class="container mx-auto px-4">
+    <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20 scroll-reveal">
+      <span class="inline-block px-5 py-2 bg-brand-pink/15 text-brand-pink font-bold rounded-full mb-5 text-sm tracking-wider uppercase">Categories</span>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 font-display">What Will You Judge?</h2>
+      <p class="mt-5 text-lg md:text-xl text-gray-600 font-medium">Explore relationships, friendships, character traits, workplace drama, and more.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      
+      <!-- Card 1: Relationships -->
+      <article class="category-card-enhanced group relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-pink-500/30 cursor-pointer scroll-reveal bg-gradient-to-br from-pink-500 to-rose-600">
+        <!-- Background Image -->
+        <div class="absolute inset-0 overflow-hidden">
+          <img src="https://placehold.co/600x800/EC4899/ffffff?text=💕&font=inter"
+               alt="Relationship scenarios category cover"
+               loading="lazy" decoding="async" width="600" height="800"
+               class="category-img-zoom w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-all duration-500" />
+        </div>
+
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent" aria-hidden="true"></div>
+
+        <!-- Decorative corner accent -->
+        <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[100px] backdrop-blur-sm" aria-hidden="true"></div>
+
+        <!-- Content -->
+        <div class="relative h-[420px] flex flex-col justify-between p-7">
+          <!-- Top Section -->
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-12 transition-all">
+                💕
+              </div>
+            </div>
+            <div class="glass text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+              <span class="text-pink-200">250+</span> Cases
+            </div>
+          </div>
+
+          <!-- Middle Section - Icon/Visual -->
+          <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+            <div class="relative">
+              <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-white/20 shadow-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </div>
+              <div class="absolute -top-1 -right-1 w-6 h-6 bg-pink-400 rounded-full animate-ping opacity-75"></div>
+            </div>
+          </div>
+
+          <!-- Bottom Section -->
+          <div class="text-white space-y-3">
+            <div class="flex items-center gap-2">
+              <div class="h-1 w-12 bg-pink-400 rounded-full"></div>
+              <span class="text-xs font-bold uppercase tracking-wider text-pink-200">Most Popular</span>
+            </div>
+            <h3 class="text-3xl md:text-4xl font-black font-display group-hover:text-pink-300 transition-colors leading-tight">Relationships</h3>
+            <p class="text-sm text-white/90 font-medium leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">Love triangles, dating red flags, and romantic dilemmas</p>
+            
+            <!-- Stats -->
+            <div class="flex items-center gap-4 pt-2">
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-pink-300">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="text-xs font-bold text-pink-200">45K votes</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-pink-300">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="text-xs font-bold text-pink-200">4.9</span>
+              </div>
+            </div>
+
+            <!-- Arrow indicator -->
+            <div class="absolute bottom-7 right-7 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
+              <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Friendships -->
+      <article class="category-card-enhanced group relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-yellow-500/30 cursor-pointer scroll-reveal bg-gradient-to-br from-yellow-500 to-orange-600" style="animation-delay: 0.1s">
+        <div class="absolute inset-0 overflow-hidden">
+          <img src="https://placehold.co/600x800/F59E0B/ffffff?text=🤝&font=inter"
+               alt="Friendship dilemmas category cover"
+               loading="lazy" decoding="async" width="600" height="800"
+               class="category-img-zoom w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-all duration-500" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent" aria-hidden="true"></div>
+        <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[100px] backdrop-blur-sm" aria-hidden="true"></div>
+
+        <div class="relative h-[420px] flex flex-col justify-between p-7">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-12 transition-all">
+                🤝
+              </div>
+            </div>
+            <div class="glass text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+              <span class="text-yellow-200">180+</span> Cases
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+            <div class="relative">
+              <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-white/20 shadow-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div class="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full animate-ping opacity-75"></div>
+            </div>
+          </div>
+
+          <div class="text-white space-y-3">
+            <div class="flex items-center gap-2">
+              <div class="h-1 w-12 bg-yellow-400 rounded-full"></div>
+              <span class="text-xs font-bold uppercase tracking-wider text-yellow-200">Trending</span>
+            </div>
+            <h3 class="text-3xl md:text-4xl font-black font-display group-hover:text-yellow-300 transition-colors leading-tight">Friendships</h3>
+            <p class="text-sm text-white/90 font-medium leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">Loyalty tests, friend drama, and boundary issues</p>
+            
+            <div class="flex items-center gap-4 pt-2">
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-yellow-300">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="text-xs font-bold text-yellow-200">32K votes</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-300">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="text-xs font-bold text-yellow-200">4.8</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-7 right-7 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
+              <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Characters -->
+      <a href="judge.html" class="category-card-enhanced group relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-purple-500/30 cursor-pointer scroll-reveal bg-gradient-to-br from-purple-600 to-indigo-700" style="animation-delay: 0.2s">
+        <div class="absolute inset-0 overflow-hidden">
+          <img src="https://placehold.co/600x800/6D28D9/ffffff?text=🎭&font=inter"
+               alt="Character analysis category cover"
+               loading="lazy" decoding="async" width="600" height="800"
+               class="category-img-zoom w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-all duration-500" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent" aria-hidden="true"></div>
+        <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[100px] backdrop-blur-sm" aria-hidden="true"></div>
+
+        <div class="relative h-[420px] flex flex-col justify-between p-7">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-12 transition-all">
+                🎭
+              </div>
+            </div>
+            <div class="glass text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+              <span class="text-purple-200">320+</span> Cases
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+            <div class="relative">
+              <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-white/20 shadow-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M12 2a10 10 0 0 1 7.54 16.42l-.8-.8A9 9 0 1 0 12 3v1"></path>
+                  <path d="M12 12V7"></path>
+                  <path d="M16 8l-4 4"></path>
+                </svg>
+              </div>
+              <div class="absolute -top-1 -right-1 w-6 h-6 bg-purple-400 rounded-full animate-ping opacity-75"></div>
+            </div>
+          </div>
+
+          <div class="text-white space-y-3">
+            <div class="flex items-center gap-2">
+              <div class="h-1 w-12 bg-purple-400 rounded-full"></div>
+              <span class="text-xs font-bold uppercase tracking-wider text-purple-200">New</span>
+            </div>
+            <h3 class="text-3xl md:text-4xl font-black font-display group-hover:text-purple-300 transition-colors leading-tight">Characters</h3>
+            <p class="text-sm text-white/90 font-medium leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">Personality traits, moral judgments, and behavior analysis</p>
+            
+            <div class="flex items-center gap-4 pt-2">
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-300">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="text-xs font-bold text-purple-200">52K votes</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-purple-300">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="text-xs font-bold text-purple-200">4.7</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-7 right-7 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
+              <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4: More -->
+      <article class="category-card-enhanced group relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-emerald-500/30 cursor-pointer scroll-reveal bg-gradient-to-br from-emerald-500 to-teal-600" style="animation-delay: 0.3s">
+        <div class="absolute inset-0 overflow-hidden">
+          <img src="https://placehold.co/600x800/10B981/ffffff?text=✨&font=inter"
+               alt="Random hot takes category cover"
+               loading="lazy" decoding="async" width="600" height="800"
+               class="category-img-zoom w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-all duration-500" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent" aria-hidden="true"></div>
+        <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[100px] backdrop-blur-sm" aria-hidden="true"></div>
+
+        <div class="relative h-[420px] flex flex-col justify-between p-7">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-12 transition-all">
+                ✨
+              </div>
+            </div>
+            <div class="glass text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
+              <span class="text-emerald-200">150+</span> Cases
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+            <div class="relative">
+              <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center ring-4 ring-white/20 shadow-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <div class="absolute -top-1 -right-1 w-6 h-6 bg-emerald-400 rounded-full animate-ping opacity-75"></div>
+            </div>
+          </div>
+
+          <div class="text-white space-y-3">
+            <div class="flex items-center gap-2">
+              <div class="h-1 w-12 bg-emerald-400 rounded-full"></div>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-200">Mixed</span>
+            </div>
+            <h3 class="text-3xl md:text-4xl font-black font-display group-hover:text-emerald-300 transition-colors leading-tight">...And More</h3>
+            <p class="text-sm text-white/90 font-medium leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">Workplace drama, family conflicts, and pop culture</p>
+            
+            <div class="flex items-center gap-4 pt-2">
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-300">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="text-xs font-bold text-emerald-200">28K votes</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-emerald-300">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="text-xs font-bold text-emerald-200">4.6</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-7 right-7 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
+              <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="text-center mt-14">
+      <a href="#categories" class="inline-flex items-center gap-3 text-brand-purple font-black text-xl hover:text-brand-pink transition-all group hover:gap-4" aria-label="Explore all categories">
+        <span class="relative">
+          Explore All Categories
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-pink transition-all group-hover:w-full"></span>
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="transition-transform group-hover:translate-x-1" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Enhanced CSS for Category Cards -->
+<style>
+  /* Category card enhanced animations */
+  .category-card-enhanced {
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .category-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
+    background-size: 400% 400%;
+    border-radius: 1.75rem;
+    opacity: 0;
+    z-index: -1;
+    animation: gradient 8s ease infinite;
+    transition: opacity 0.5s ease;
+  }
+  
+  .category-card-enhanced:hover::before {
+    opacity: 0.7;
+  }
+  
+  .category-card-enhanced:hover {
+    transform: translateY(-12px) scale(1.02);
+  }
+
+  /* Improved image zoom effect */
+  .category-card-enhanced .category-img-zoom {
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .category-card-enhanced:hover .category-img-zoom {
+    transform: scale(1.2) rotate(3deg);
+  }
+
+  /* Glassmorphism enhancement */
+  .category-card-enhanced .glass {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+</style>
+
+
+    <!-- How it works -->
+    <section id="how-it-works" class="section-padding bg-gradient-to-br from-gray-50 to-gray-100">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20 scroll-reveal">
+          <span class="inline-block px-5 py-2 bg-brand-purple/15 text-brand-purple font-bold rounded-full mb-5 text-sm tracking-wider uppercase">How It Works</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 font-display">Become the Social Arbitrator</h2>
+          <p class="mt-5 text-lg md:text-xl text-gray-600 font-medium">Start in three simple steps and see where you stand with the crowd.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          <!-- Step 1 -->
+          <article class="group judge-card p-8 md:p-10 rounded-2xl shadow-xl border-2 border-gray-100 text-center scroll-reveal" style="animation-delay: 0.1s">
+            <div class="relative inline-block mb-6">
+              <div class="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all icon-pulse" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              </div>
+              <span class="absolute -top-2 -right-2 bg-brand-yellow text-gray-900 text-xs font-black px-2.5 py-1 rounded-full shadow-md">01</span>
+            </div>
+            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-3 font-display group-hover:text-brand-purple transition-colors">Get a Scenario</h3>
+            <p class="text-gray-600 text-base md:text-lg leading-relaxed">You'll see real‑life dilemmas, profiles, and situations across relationships, friendships, and more.</p>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="group judge-card p-8 md:p-10 rounded-2xl shadow-xl border-2 border-gray-100 text-center scroll-reveal" style="animation-delay: 0.2s">
+            <div class="relative inline-block mb-6">
+              <div class="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-600 text-white rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all icon-pulse" style="animation-delay: 0.5s" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+              </div>
+              <span class="absolute -top-2 -right-2 bg-brand-yellow text-gray-900 text-xs font-black px-2.5 py-1 rounded-full shadow-md">02</span>
+            </div>
+            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-3 font-display group-hover:text-brand-pink transition-colors">Cast Your Vote</h3>
+            <p class="text-gray-600 text-base md:text-lg leading-relaxed">Pick the verdict that matches your instincts — red flag, green flag, or somewhere in between.</p>
+          </article>
+
+          <!-- Step 3 -->
+          <article class="group judge-card p-8 md:p-10 rounded-2xl shadow-xl border-2 border-gray-100 text-center scroll-reveal" style="animation-delay: 0.3s">
+            <div class="relative inline-block mb-6">
+              <div class="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 text-white rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all icon-pulse" style="animation-delay: 1s" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+              </div>
+              <span class="absolute -top-2 -right-2 bg-brand-yellow text-gray-900 text-xs font-black px-2.5 py-1 rounded-full shadow-md">03</span>
+            </div>
+            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-3 font-display group-hover:text-brand-yellow transition-colors">See The Verdict</h3>
+            <p class="text-gray-600 text-base md:text-lg leading-relaxed">Instantly compare with the crowd to discover if you're aligned or a contrarian thinker.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section-padding bg-gradient-to-br from-gray-50 to-gray-100">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20 scroll-reveal">
+          <span class="inline-block px-5 py-2 bg-brand-yellow/15 text-brand-yellow font-bold rounded-full mb-5 text-sm tracking-wider uppercase">Testimonials</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 font-display">What Players Think</h2>
+          <p class="mt-5 text-lg md:text-xl text-gray-600 font-medium">Hear from people who cast verdicts daily and love the debates it sparks.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          <!-- Testimonial 1 -->
+          <figure class="testimonial-card p-8 md:p-10 rounded-3xl shadow-xl border-2 border-gray-100 scroll-reveal">
+            <div class="flex text-yellow-400 mb-5 text-2xl" role="img" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="text-gray-700 text-lg md:text-xl font-medium italic leading-relaxed">"I'm addicted — the dilemmas feel scarily real."</blockquote>
+            <figcaption class="flex items-center mt-7 pt-7 border-t-2 border-gray-100">
+              <div class="relative">
+                <img src="https://placehold.co/50x50/F59E0B/ffffff?text=A&font=inter" alt="Avatar of Alex J" loading="lazy" decoding="async" width="56" height="56" class="w-14 h-14 rounded-full ring-4 ring-yellow-100" />
+                <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white"></span>
+              </div>
+              <div class="ml-4">
+                <p class="font-black text-gray-900 text-lg">Alex J.</p>
+                <p class="text-sm text-gray-500 font-semibold">Social Judge, Level 12</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Testimonial 2 -->
+          <figure class="testimonial-card p-8 md:p-10 rounded-3xl shadow-xl border-2 border-gray-100 scroll-reveal" style="animation-delay: 0.1s">
+            <div class="flex text-yellow-400 mb-5 text-2xl" role="img" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="text-gray-700 text-lg md:text-xl font-medium italic leading-relaxed">"We play together and it starts the best conversations."</blockquote>
+            <figcaption class="flex items-center mt-7 pt-7 border-t-2 border-gray-100">
+              <div class="relative">
+                <img src="https://placehold.co/50x50/EC4899/ffffff?text=S&font=inter" alt="Avatar of Sarah K" loading="lazy" decoding="async" width="56" height="56" class="w-14 h-14 rounded-full ring-4 ring-pink-100" />
+                <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white"></span>
+              </div>
+              <div class="ml-4">
+                <p class="font-black text-gray-900 text-lg">Sarah K.</p>
+                <p class="text-sm text-gray-500 font-semibold">Dilemma Debater</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <!-- Testimonial 3 -->
+          <figure class="testimonial-card p-8 md:p-10 rounded-3xl shadow-xl border-2 border-gray-100 scroll-reveal" style="animation-delay: 0.2s">
+            <div class="flex text-yellow-400 mb-5 text-2xl" role="img" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="text-gray-700 text-lg md:text-xl font-medium italic leading-relaxed">"Seeing '85% agree' is elite validation."</blockquote>
+            <figcaption class="flex items-center mt-7 pt-7 border-t-2 border-gray-100">
+              <div class="relative">
+                <img src="https://placehold.co/50x50/6D28D9/ffffff?text=M&font=inter" alt="Avatar of Mike D" loading="lazy" decoding="async" width="56" height="56" class="w-14 h-14 rounded-full ring-4 ring-purple-100" />
+                <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white"></span>
+              </div>
+              <div class="ml-4">
+                <p class="font-black text-gray-900 text-lg">Mike D.</p>
+                <p class="text-sm text-gray-500 font-semibold">Verdict Veteran</p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section id="leaderboard" class="section-padding bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20 scroll-reveal">
+          <span class="inline-block px-5 py-2 bg-brand-purple/15 text-brand-purple font-bold rounded-full mb-5 text-sm tracking-wider uppercase">Leaderboard</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 font-display">Top Judges This Week</h2>
+          <p class="mt-5 text-lg md:text-xl text-gray-600 font-medium">See who's most aligned with the crowd.</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-100 scroll-reveal">
+          <div class="overflow-x-auto">
+            <table class="w-full" aria-describedby="leaderboardDesc">
+              <caption id="leaderboardDesc" class="sr-only">Weekly leaderboard of top judges by accuracy and verdicts</caption>
+              <thead class="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                <tr>
+                  <th scope="col" class="py-5 px-6 text-left text-xs font-black uppercase tracking-wider">Rank</th>
+                  <th scope="col" class="py-5 px-6 text-left text-xs font-black uppercase tracking-wider">Player</th>
+                  <th scope="col" class="py-5 px-6 text-left text-xs font-black uppercase tracking-wider">Accuracy</th>
+                  <th scope="col" class="py-5 px-6 text-left text-xs font-black uppercase tracking-wider">Verdicts</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y-2 divide-gray-100">
+                <tr class="leaderboard-row">
+                  <th scope="row" class="py-5 px-6">
+                    <span class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white rounded-xl inline-flex items-center justify-center font-black text-lg shadow-lg rank-glow-1">1</span>
+                  </th>
+                  <td class="py-5 px-6">
+                    <div class="flex items-center">
+                      <div class="relative">
+                        <img class="h-12 w-12 rounded-xl ring-4 ring-yellow-100 shadow-md" src="https://placehold.co/48x48/F59E0B/ffffff?text=JD&font=inter" alt="Avatar of JudgeDredd" width="48" height="48" loading="lazy" decoding="async" />
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 rounded-full border-2 border-white flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </span>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-base font-black text-gray-900">JudgeDredd</div>
+                        <div class="text-sm text-gray-500 font-semibold">Level 25</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6">
+                    <div class="flex items-center gap-2">
+                      <span class="text-lg font-black text-gray-900">92%</span>
+                      <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Hot Streak</span>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6"><div class="text-lg font-black text-gray-900">1,247</div></td>
+                </tr>
+
+                <tr class="leaderboard-row">
+                  <th scope="row" class="py-5 px-6">
+                    <span class="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-500 text-white rounded-xl inline-flex items-center justify-center font-black text-lg shadow-lg rank-glow-2">2</span>
+                  </th>
+                  <td class="py-5 px-6">
+                    <div class="flex items-center">
+                      <div class="relative">
+                        <img class="h-12 w-12 rounded-xl ring-4 ring-gray-100 shadow-md" src="https://placehold.co/48x48/EC4899/ffffff?text=TM&font=inter" alt="Avatar of TruthMaster" width="48" height="48" loading="lazy" decoding="async" />
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-base font-black text-gray-900">TruthMaster</div>
+                        <div class="text-sm text-gray-500 font-semibold">Level 22</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6"><span class="text-lg font-black text-gray-900">89%</span></td>
+                  <td class="py-5 px-6"><div class="text-lg font-black text-gray-900">987</div></td>
+                </tr>
+
+                <tr class="leaderboard-row">
+                  <th scope="row" class="py-5 px-6">
+                    <span class="w-10 h-10 bg-gradient-to-br from-amber-600 to-amber-800 text-white rounded-xl inline-flex items-center justify-center font-black text-lg shadow-lg rank-glow-3">3</span>
+                  </th>
+                  <td class="py-5 px-6">
+                    <div class="flex items-center">
+                      <div class="relative">
+                        <img class="h-12 w-12 rounded-xl ring-4 ring-amber-100 shadow-md" src="https://placehold.co/48x48/6D28D9/ffffff?text=JJ&font=inter" alt="Avatar of JuryDuty" width="48" height="48" loading="lazy" decoding="async" />
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-base font-black text-gray-900">JuryDuty</div>
+                        <div class="text-sm text-gray-500 font-semibold">Level 20</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6"><span class="text-lg font-black text-gray-900">87%</span></td>
+                  <td class="py-5 px-6"><div class="text-lg font-black text-gray-900">845</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-5 text-center border-t-2 border-gray-100">
+            <a href="#leaderboard" class="inline-flex items-center gap-2 text-base font-black text-brand-purple hover:text-brand-pink transition-colors group">
+              View Full Leaderboard
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="group-hover:translate-x-1 transition-transform" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section id="play" class="relative bg-gray-900 text-white overflow-hidden">
+      <div class="absolute top-10 left-10 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl animate-float" aria-hidden="true"></div>
+      <div class="absolute bottom-20 right-20 w-32 h-32 bg-pink-600/20 rounded-full blur-3xl animate-float" style="animation-delay:2s" aria-hidden="true"></div>
+      <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-yellow-600/10 rounded-full blur-3xl animate-float" style="animation-delay:1s" aria-hidden="true"></div>
+
+      <div class="container mx-auto px-4 py-20 md:py-32 text-center relative z-10">
+        <h2 class="text-4xl md:text-6xl lg:text-7xl font-black font-display">Ready to Cast Your Vote?</h2>
+        <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto opacity-95 font-medium">Join thousands debating the toughest social dilemmas — fast, fun, and surprisingly addictive.</p>
+        <div class="mt-12">
+          <a href="#play" class="inline-block btn-primary bg-brand-yellow text-gray-900 font-black py-5 px-12 text-xl md:text-2xl rounded-full shadow-2xl transform hover:scale-105 transition-all shine-effect">
+            Play For Free
+          </a>
+          <p class="mt-5 text-base opacity-90 font-medium">No credit card required. Start in seconds.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky mobile CTA -->
+  <div class="fixed bottom-5 left-0 right-0 mx-auto max-w-sm px-4 md:hidden z-40">
+    <a href="#play" class="block text-center bg-brand-yellow text-gray-900 font-black py-4 rounded-2xl shadow-2xl hover:shadow-3xl transition-all shine-effect">Play Now</a>
+  </div>
+
+  <!-- Back to top -->
+  <button id="backToTop" class="back-to-top fixed bottom-6 right-6 bg-white text-gray-900 border-2 border-gray-200 rounded-2xl shadow-xl p-4 hover:bg-brand-purple hover:text-white hover:border-brand-purple transition-all" aria-label="Back to top" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path>
+    </svg>
+  </button>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-br from-gray-100 to-gray-200 border-t-2 border-gray-200">
+    <div class="container mx-auto px-4 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div>
+          <a href="#" class="text-2xl font-black font-display text-gray-800 flex items-center gap-2.5 mb-5 hover:text-brand-purple transition-colors" aria-label="The Verdict home">
+            <div class="bg-brand-purple/10 p-2 rounded-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 20h.01"></path><path d="M4 20h.01"></path><path d="M8 20h.01"></path><path d="M12 20h.01"></path><path d="M20 20h.01"></path><path d="m2 14 10-3 10 3"></path><path d="M2 10V6.5a2.5 2.5 0 0 1 5 0V10"></path><path d="M17 10V6.5a2.5 2.5 0 0 1 5 0V10"></path>
+              </svg>
+            </div>
+            The Verdict
+          </a>
+          <p class="text-gray-600 text-sm font-medium leading-relaxed">The ultimate social game for judging friendships, relationships, and everything in between.</p>
+        </div>
+
+        <nav aria-label="Game links">
+          <h3 class="font-black text-gray-900 mb-4 text-lg">Game</h3>
+          <ul class="space-y-3">
+            <li><a href="#how-it-works" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">How to Play</a></li>
+            <li><a href="#categories" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Categories</a></li>
+            <li><a href="#leaderboard" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Leaderboard</a></li>
+            <li><button id="open-submit" type="button" class="text-left text-gray-600 hover:text-brand-purple transition-colors font-semibold">Submit a Scenario</button></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Company links">
+          <h3 class="font-black text-gray-900 mb-4 text-lg">Company</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">About Us</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Careers</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Blog</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Press</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Support links">
+          <h3 class="font-black text-gray-900 mb-4 text-lg">Support</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Help Center</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Contact Us</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-purple transition-colors font-semibold">Terms of Service</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="border-t-2 border-gray-300 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-600">
+        <div class="text-center md:text-left mb-4 md:mb-0">
+          <p class="text-sm font-semibold">&copy; 2025 Verdict Games. All rights reserved.</p>
+        </div>
+        <div class="flex space-x-6" aria-label="Social links">
+          <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-brand-purple transition-all hover:scale-110 transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-brand-purple transition-all hover:scale-110 transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8H6v4h3v12h5V12h3.642l.358-4H14V6.333C14 5.378 14.192 5 15.115 5H18V0h-3.808C10.596 0 9 1.583 9 4.615V8z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-brand-purple transition-all hover:scale-110 transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 7c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5-2.239-5-5-5zm6.406-1.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.439-.645 1.439-1.44-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sample Scenario Modal -->
+  <div id="sampleModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0 bg-black/70" aria-hidden="true"></div>
+    <div role="dialog" aria-modal="true" aria-labelledby="sampleTitle"
+         class="relative bg-white rounded-3xl shadow-2xl max-w-xl w-full p-8 md:p-10 animate-slide-up">
+      <div class="flex items-start justify-between gap-4 mb-6">
+        <h3 id="sampleTitle" class="text-2xl md:text-3xl font-black text-gray-900 font-display">Sample Scenario</h3>
+        <button id="closeSample" type="button" aria-label="Close sample" class="text-gray-400 hover:text-gray-700 hover:rotate-90 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-7 font-medium">
+        Your friend cancels plans last minute for the third time this month with a vague excuse. Red flag or reasonable?
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-7">
+        <button type="button" class="w-full bg-gradient-to-br from-red-600 to-red-700 text-white font-black py-4 px-6 rounded-2xl hover:from-red-700 hover:to-red-800 hover:scale-105 transition-all shadow-xl">
+          🚩 Red Flag
+        </button>
+        <button type="button" class="w-full bg-gradient-to-br from-emerald-600 to-emerald-700 text-white font-black py-4 px-6 rounded-2xl hover:from-emerald-700 hover:to-emerald-800 hover:scale-105 transition-all shadow-xl">
+          ✅ Reasonable
+        </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-gray-200">
+        <p class="text-sm font-black text-gray-900 uppercase tracking-wider mb-3">Crowd Verdict:</p>
+        <div class="h-4 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner mb-3">
+          <div class="progress-bar h-4 bg-gradient-to-r from-red-500 to-red-600 rounded-full" style="width: 68%"></div>
+        </div>
+        <div class="flex justify-between text-sm font-bold text-gray-700">
+          <span>🚩 Red Flag 68%</span>
+          <span>✅ Reasonable 32%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+
+      // Sticky Header
+      const header = document.querySelector('header');
+      if (header) {
+        const setHeaderBg = () => {
+          if (window.scrollY > 80) {
+            header.classList.add('bg-gray-900/90', 'backdrop-blur-lg', 'shadow-xl');
+            header.classList.remove('bg-transparent');
+          } else {
+            header.classList.remove('bg-gray-900/90', 'backdrop-blur-lg', 'shadow-xl');
+            header.classList.add('bg-transparent');
+          }
+        };
+        setHeaderBg();
+        window.addEventListener('scroll', setHeaderBg, { passive: true });
+      }
+
+      // Back to top
+      const backBtn = document.getElementById('backToTop');
+      if (backBtn) {
+        const toggleBackBtn = () => {
+          if (window.scrollY > 600) backBtn.classList.add('show');
+          else backBtn.classList.remove('show');
+        };
+        toggleBackBtn();
+        window.addEventListener('scroll', toggleBackBtn, { passive: true });
+        backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
+
+      // Mobile menu
+      const menuBtn = document.getElementById('mobile-menu-button');
+      const menuClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      if (menuBtn && menuClose && mobileMenu) {
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        let lastFocused = null;
+        const trapSelectors = 'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+        const openMenu = () => {
+          lastFocused = document.activeElement;
+          mobileMenu.classList.remove('hidden');
+          menuBtn.setAttribute('aria-expanded', 'true');
+          const focusables = mobileMenu.querySelectorAll(trapSelectors);
+          if (focusables.length) focusables[0].focus();
+          document.addEventListener('keydown', trapFocus);
+          document.addEventListener('keydown', onEsc);
+        };
+
+        const closeMenu = () => {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          document.removeEventListener('keydown', trapFocus);
+          document.removeEventListener('keydown', onEsc);
+          if (lastFocused) lastFocused.focus();
+        };
+
+        const trapFocus = (e) => {
+          if (e.key !== 'Tab') return;
+          const focusables = [...mobileMenu.querySelectorAll(trapSelectors)].filter(el => !el.hasAttribute('disabled'));
+          if (!focusables.length) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        };
+
+        const onEsc = (e) => { if (e.key === 'Escape') closeMenu(); };
+
+        menuBtn.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+      }
+
+      // Sample modal
+      const sampleModal = document.getElementById('sampleModal');
+      const openSampleBtn = document.getElementById('open-sample');
+      const closeSampleBtn = document.getElementById('closeSample');
+
+      if (sampleModal && openSampleBtn && closeSampleBtn) {
+        const openSample = () => {
+          sampleModal.classList.remove('hidden');
+          sampleModal.classList.add('flex');
+          const firstFocusable = sampleModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+          if (firstFocusable) firstFocusable.focus();
+          document.addEventListener('keydown', sampleEsc);
+        };
+        
+        const closeSample = () => {
+          sampleModal.classList.add('hidden');
+          sampleModal.classList.remove('flex');
+          document.removeEventListener('keydown', sampleEsc);
+          if (openSampleBtn) openSampleBtn.focus();
+        };
+        
+        const sampleEsc = (e) => { if (e.key === 'Escape') closeSample(); };
+
+        openSampleBtn.addEventListener('click', openSample);
+        closeSampleBtn.addEventListener('click', closeSample);
+        sampleModal.addEventListener('click', (e) => { 
+          if (e.target === sampleModal.firstElementChild) closeSample(); 
+        });
+      }
+
+      // Submit scenario
+      const openSubmit = document.getElementById('open-submit');
+      if (openSubmit) {
+        openSubmit.addEventListener('click', () => {
+          console.log('Submit a Scenario clicked. (Feature coming soon!)');
+        });
+      }
+
+      // Scroll reveal animation
+      const revealElements = document.querySelectorAll('.scroll-reveal');
+      const revealOnScroll = () => {
+        revealElements.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight * 0.85;
+          if (isVisible) el.classList.add('revealed');
+        });
+      };
+      revealOnScroll();
+      window.addEventListener('scroll', revealOnScroll, { passive: true });
+
+      // NEW CODE: Navigation to categories section
+      // Function to scroll to categories section
+      function scrollToCategories() {
+        const categoriesSection = document.getElementById('categories');
+        if (categoriesSection) {
+          categoriesSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+
+      // Add event listeners to the buttons
+      // Get all buttons that should navigate to categories
+      const playNowButtons = document.querySelectorAll('a[href="#play"]');
+      const startJudgingButton = document.getElementById('primary-hero-cta');
+      
+      // Add click event listeners
+      playNowButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToCategories();
+        });
+      });
+      
+      if (startJudgingButton) {
+        startJudgingButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToCategories();
+        });
+      }
+      
+      // Also update the sticky mobile CTA button
+      const mobileCta = document.querySelector('.fixed.bottom-5 a[href="#play"]');
+      if (mobileCta) {
+        mobileCta.addEventListener('click', function(e) {
+          e.preventDefault();
+          scrollToCategories();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
