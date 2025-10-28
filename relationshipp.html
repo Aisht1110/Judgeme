@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LoveMeter • Relationship Test</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- All CSS is now back inside the <style> tag -->
+  <style>
+    body {
+      font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(236, 72, 153, 0.10), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(248, 113, 113, 0.12), transparent 60%),
+        linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+      min-height: 100vh;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+
+    @keyframes subtle-pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(236,72,153,.28);} 50%{ box-shadow:0 0 24px 8px rgba(236,72,153,.18);} }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(18px) saturate(120%); -webkit-backdrop-filter: blur(18px) saturate(120%); border: 1px solid rgba(148,163,184,0.22); }
+    .cta {
+      position: relative; background-image: linear-gradient(92deg,#ec4899 0%,#f87171 100%); color:#fff;
+      box-shadow: 0 10px 20px rgba(236,72,153,.35), inset 0 1px 0 rgba(255,255,255,.25);
+      transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s, filter .2s; isolation:isolate;
+    }
+    .cta::before{content:""; position:absolute; inset:1px; border-radius:inherit; background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.22), transparent 55%); pointer-events:none; z-index:0;}
+    .cta::after{content:""; position:absolute; top:0; left:-140%; width:120%; height:100%; background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,.28) 50%, transparent 60%); transform: skewX(-12deg); transition:left 800ms ease; pointer-events:none; z-index:1;}
+    .cta:hover{ transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 30px rgba(236,72,153,.45), inset 0 1px 0 rgba(255,255,255,.28); filter:saturate(110%); }
+    .cta:hover::after{ left:140%; }
+    .cta:active{ transform: translateY(0) scale(.99); box-shadow: 0 8px 16px rgba(236,72,153,.30); }
+    .cta:focus-visible{ outline:none; box-shadow: 0 0 0 4px rgba(248,113,113,.35), 0 12px 24px rgba(236,72,153,.35); }
+
+    .metric{ transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease; }
+    .metric:hover{ transform: translateY(-3px); box-shadow:0 10px 22px rgba(15,23,42,.06); border-color: rgba(236,72,153,.25); }
+
+    .progress-sheen{ position:relative; overflow:hidden; }
+    .progress-sheen::after{ content:""; position:absolute; top:0; left:-40%; width:40%; height:100%; background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); animation: sheen 2.2s infinite ease; }
+    @keyframes sheen { 0%{ left:-40%; } 100%{ left:110%; } }
+
+    /* Result upgrades */
+    .result-card { background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75)); }
+    .gauge {
+      --size: 160px; --track: 10; --value: 0; --color: #6366f1;
+      width: var(--size); height: var(--size); border-radius: 50%;
+      background:
+        radial-gradient(farthest-side, white 79%, transparent 80% 100%),
+        conic-gradient(var(--color) calc(var(--value)*1%), #e5e7eb 0);
+      mask: radial-gradient(farthest-side, transparent calc(100% - var(--track)*1px - 1px), #000 calc(100% - var(--track)*1px));
+      position: relative; display:grid; place-items:center;
+    }
+    .gauge .gauge-content {
+      position:absolute; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 900;
+      color: #111827;
+    }
+    .stat { background: rgba(255,255,255,.8); border:1px solid rgba(148,163,184,.25); }
+    .badge { padding: 6px 10px; border-radius:9999px; color:white; font-weight:700; font-size:.85rem; }
+
+    /* --- NEW MODAL STYLES --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      animation: fadeIn 300ms ease forwards;
+    }
+    
+    .modal-content {
+      animation: slideIn 300ms ease 100ms forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* --- END MODAL STYLES --- */
+
+    /* --- NEW STAT CARD & ANIMATION STYLES --- */
+    .stat-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      transition: transform 250ms ease, box-shadow 250ms ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .stat-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569; /* slate-600 */
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .stat-value {
+      font-size: 1.75rem; /* 2xl */
+      font-weight: 800; /* extrabold */
+      color: #1e293b; /* slate-800 */
+      line-height: 1;
+    }
+    .stat-desc {
+      font-size: 0.75rem;
+      color: #64748b; /* slate-500 */
+    }
+
+    /* Page load animations */
+    @keyframes resultPopIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes resultFadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-pop-in { animation: resultPopIn 500ms ease forwards; }
+    .animate-fade-up { animation: resultFadeUp 500ms ease forwards; }
+    /* --- END STAT CARD & ANIMATION STYLES --- */
+
+  
+/* ========== ENHANCED RESULT PAGE STYLES ========== */
+
+/* Smooth entrance animations */
+@keyframes slideInScale {
+  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(25px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.08); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { 
+    box-shadow: 0 0 30px var(--color-glow, rgba(236,72,153,0.4)),
+                0 0 60px var(--color-glow, rgba(236,72,153,0.2)); 
+  }
+  50% { 
+    box-shadow: 0 0 50px var(--color-glow, rgba(236,72,153,0.6)),
+                0 0 80px var(--color-glow, rgba(236,72,153,0.3)); 
+  }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Enhanced result card */
+.result-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92)) !important;
+  animation: slideInScale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+/* Improved gauge with progress ring */
+.gauge-enhanced {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.9));
+  box-shadow: 
+    0 25px 50px rgba(0,0,0,0.12),
+    inset 0 -3px 15px rgba(0,0,0,0.05),
+    inset 0 3px 15px rgba(255,255,255,0.9);
+  animation: bounceIn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.gauge-enhanced::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    var(--color, #ec4899) 0%,
+    var(--color, #ec4899) calc(var(--value, 0) * 3.6deg),
+    rgba(226,232,240,0.4) calc(var(--value, 0) * 3.6deg),
+    rgba(226,232,240,0.4) 360deg
+  );
+  mask: radial-gradient(closest-side, transparent 86%, white 87%);
+  -webkit-mask: radial-gradient(closest-side, transparent 86%, white 87%);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.gauge-enhanced::after {
+  content: '';
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  background: inherit;
+  filter: blur(20px);
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.gauge-content-enhanced {
+  text-align: center;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.score-number-enhanced {
+  font-size: 4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -3px;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(236,72,153,0.2);
+}
+
+.emoji-icon-enhanced {
+  font-size: 3.5rem;
+  animation: bounceIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s forwards;
+  opacity: 0;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.score-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Enhanced badge with shimmer */
+.badge-enhanced {
+  padding: 14px 32px;
+  border-radius: 50px;
+  color: white;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  box-shadow: 
+    0 12px 30px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+  animation: floatBadge 3.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 3s infinite;
+}
+
+/* Profile section improvements */
+.profile-section-enhanced {
+  animation: fadeInUp 0.7s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+.profile-title-enhanced {
+  font-size: 2.75rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #1e293b, #475569);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.25rem;
+  line-height: 1.1;
+}
+
+.profile-description-enhanced {
+  font-size: 1.125rem;
+  line-height: 1.9;
+  color: #334155;
+  margin-top: 1.5rem;
+  padding: 1.75rem;
+  background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(241,245,249,0.8));
+  border-radius: 18px;
+  border-left: 5px solid var(--color, #ec4899);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  backdrop-filter: blur(10px);
+}
+
+/* Button styles */
+.btn-enhanced {
+  padding: 15px 30px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.btn-enhanced:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-gradient-enhanced {
+  background: linear-gradient(135deg, #ec4899, #f87171);
+  color: white;
+}
+
+.btn-gradient-enhanced::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #f87171, #ec4899);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-gradient-enhanced:hover::before {
+  opacity: 1;
+}
+
+.btn-gradient-enhanced span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-outline-enhanced {
+  background: white;
+  color: #475569;
+  border: 2.5px solid #e2e8f0;
+}
+
+.btn-outline-enhanced:hover {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-color: #cbd5e1;
+}
+
+.btn-success-enhanced {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.btn-success-enhanced:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+/* Stats cards improvement */
+.stats-grid-enhanced {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 3.5rem;
+  animation: fadeInUp 0.7s ease-out 0.8s forwards;
+  opacity: 0;
+}
+
+.stat-card-enhanced {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(249,250,251,0.9));
+  padding: 28px;
+  border-radius: 24px;
+  text-align: center;
+  border: 2px solid rgba(148,163,184,0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color, #ec4899), var(--color-dark, #db2777));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.stat-card-enhanced:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+  border-color: var(--color, #ec4899);
+}
+
+.stat-card-enhanced:hover::before {
+  transform: scaleX(1);
+}
+
+.stat-value-enhanced {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin: 12px 0;
+}
+
+.stat-title-enhanced {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.stat-desc-enhanced {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Toast notification */
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 18px 28px;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(16,185,129,0.5);
+  font-weight: 700;
+  font-size: 1rem;
+  z-index: 10000;
+  animation: slideInScale 0.5s ease-out forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confettiFall 3s linear forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gauge-enhanced {
+    width: 200px;
+    height: 200px;
+  }
+
+  .score-number-enhanced {
+    font-size: 3rem;
+  }
+
+  .emoji-icon-enhanced {
+    font-size: 2.5rem;
+  }
+
+  .profile-title-enhanced {
+    font-size: 2rem;
+  }
+
+  .btn-enhanced {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-grid-enhanced {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+
+  <!-- Header remains static -->
+  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-sm shadow-md">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+      <div class="text-2xl font-extrabold text-gray-900">
+        Love<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500">Meter</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="nav-home" class="text-sm text-gray-700 hover:text-gray-900">Home</button>
+        <button id="nav-about" class="text-sm text-gray-700 hover:text-gray-900">About</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="app" class="max-w-6xl mx-auto p-6 md:p-10"></main>
+
+  <!-- --- NEW PLEDGE MODAL --- -->
+  <div id="pledge-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-card rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full text-center">
+      <div class="text-6xl mb-4">💖</div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">A Quick Promise</h2>
+      <p class="text-lg text-slate-700 mb-8">
+        "I will answer honestly about my relationship."
+      </p>
+      <button type="button" data-action="accept-pledge" class="cta inline-flex items-center justify-center px-10 py-3 rounded-full font-extrabold text-lg tracking-wide uppercase cursor-pointer select-none">
+        <span class="relative z-10">I Agree</span>
+      </button>
+    </div>
+  </div>
+  <!-- --- END PLEDGE MODAL --- -->
+
+  <script type="module">
+    // --- REFACTORED JAVASCRIPT ---
+
+    // App state and router
+    const appState = { page: 'home', currentIndex: 0, answers: [], resultData: null, shareId: null };
+    const appRoot = document.getElementById('app');
+
+    function setPage(p) {
+      appState.page = p;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        const firstHeading = appRoot.querySelector('h1, h2');
+        if (firstHeading) {
+          if (!firstHeading.hasAttribute('tabindex')) {
+            firstHeading.setAttribute('tabindex', '-1');
+          }
+          firstHeading.focus();
+        }
+      }, 100);
+    }
+
+    function initApp() {
+      document.addEventListener('click', handleAppClick);
+      window.USER_SEED = getOrCreateUserSeed();
+      const params = new URLSearchParams(location.search);
+      const share = params.get('share');
+      if (share) {
+        const saved = JSON.parse(localStorage.getItem('cm:' + share) || 'null');
+        if (saved) {
+          appState.resultData = saved;
+          appState.shareId = share;
+          appState.page = 'result';
+        }
+      }
+      render();
+    }
+
+    function handleAppClick(e) {
+      if (e.target.id === 'nav-home') {
+        // Reset the app state for a true 'home' navigation
+        retest(true); // pass true to prevent navigation
+        setPage('home');
+        return;
+      }
+      if (e.target.id === 'nav-about') {
+        setPage('about');
+        return;
+      }
+
+      const target = e.target.closest('[data-action]');
+      if (!target) return;
+
+      const action = target.dataset.action;
+      const ds = target.dataset;
+
+      switch (action) {
+        case 'start-quiz':
+          document.getElementById('pledge-modal').classList.remove('hidden');
+          break;
+        case 'accept-pledge':
+          document.getElementById('pledge-modal').classList.add('hidden');
+          setPage('quiz');
+          break;
+        case 'select-option':
+          selectOption(parseInt(ds.questionId, 10), ds.optionId, parseFloat(ds.weight));
+          break;
+        case 'prev-question':
+          prevQuestion();
+          break;
+        case 'next-question':
+          if (!target.disabled) nextQuestion();
+          break;
+        case 'copy-share':
+          copyShare(ds.shareId, target);
+          break;
+        case 'retest':
+          retest();
+          break;
+      }
+    }
+
+    // --- Seeded randomization helpers (stable per user) ---
+    function getOrCreateUserSeed() {
+      const key = 'cm:user-seed';
+      let seed = localStorage.getItem(key);
+      if (!seed) {
+        seed = Math.random().toString(36).slice(2, 10);
+        localStorage.setItem(key, seed);
+      }
+      return seed;
+    }
+    function mulberry32(a) { return function () { let t = a += 0x6D2B79F5; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; } }
+    function strHash(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+    function seededShuffle(arr, seedStr) {
+      const rnd = mulberry32(strHash(seedStr));
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // --- ENHANCED: 20-question bank with categories ---
+    const QUESTIONS = [
+      { id: 1, text: "When you have a serious disagreement, what is the *most common* outcome?", category: 'conflict',
+        options: [
+          { id: "a", label: "We talk it through until we find a compromise or understanding.", weight: 10 },
+          { id: "b", label: "We take a break to cool off, but always come back to solve it.", weight: 5 },
+          { id: "c", label: "One person just gives in to keep the peace.", weight: 0 },
+          { id: "d", label: "We argue, then ignore the problem and pretend it didn't happen.", weight: -5 },
+          { id: "e", label: "It turns into a big fight with yelling or insults.", weight: -10 }
+        ]
+      },
+      { id: 2, text: "Your partner gets amazing news (a promotion, a personal win). Your first, honest reaction is:", category: 'empathy',
+        options: [
+          { id: "a", label: "Pure excitement. Their win feels like my win.", weight: 10 },
+          { id: "b", label: "Happy for them, and I congratulate them warmly.", weight: 5 },
+          { id: "c", label: "A brief pang of 'Why not me?' or jealousy, but I push it down.", weight: -5 },
+          { id: "d", label: "Indifferent. It doesn't really affect me.", weight: 0 }
+        ]
+      },
+      { id: 3, text: "You feel the urge to check your partner's phone. What do you do?", category: 'trust',
+        options: [
+          { id: "a", label: "I don't have this urge; I trust them completely.", weight: 10 },
+          { id: "b", label: "I have the urge, but I don't act on it because I know it's wrong.", weight: 5 },
+          { id: "c", label: "I mention my insecurity to my partner to get reassurance.", weight: 0 },
+          { id: "d", label: "I 'casually' glance at their notifications when they're nearby.", weight: -5 },
+          { id: "e", label: "I check it when they aren't looking.", weight: -10 }
+        ]
+      },
+      { id: 4, text: "How do you handle sharing a deep, personal fear or insecurity with your partner?", category: 'communication',
+        options: [
+          { id: "a", label: "I share it openly, knowing they will support me without judgment.", weight: 10 },
+          { id: "b", label: "I share it, but I feel very anxious about how they'll react.", weight: 0 },
+          { id: "c", label: "I hint at it, hoping they'll ask me to share more.", weight: -5 },
+          { id: "d", label: "I don't share it. I need to seem strong and capable.", weight: -10 }
+        ]
+      },
+      { id: 5, text: "Your partner has had a terrible day and is in a bad mood. You...", category: 'empathy',
+        options: [
+          { id: "a", label: "Ask them to tell you about it and just listen actively.", weight: 10 },
+          { id: "b", label: "Give them a hug and try to cheer them up with a joke.", weight: 5 },
+          { id: "c", label: "Give them space, assuming they don't want to talk.", weight: 0 },
+          { id: "d", label: "Feel annoyed that their bad mood is ruining the evening.", weight: -10 }
+        ]
+      },
+      { id: 6, text: "When it comes to household chores or shared responsibilities...", category: 'conflict',
+        options: [
+          { id: "a", label: "We're a team. We have a fair system and just get it done.", weight: 10 },
+          { id: "b", label: "It's mostly fair, but sometimes needs a reminder.", weight: 5 },
+          { id: "c", label: "We often argue about who does what.", weight: -5 },
+          { id: "d", label: "One of us does almost everything to avoid a fight.", weight: -10 }
+        ]
+      },
+      { id: 7, text: "Your partner wants to go on a weekend trip with their friends, without you. You feel:", category: 'trust',
+        options: [
+          { id: "a", label: "Genuinely happy for them. It's healthy to have separate time.", weight: 10 },
+          { id: "b", label: "Fine with it, but I'll miss them.", weight: 5 },
+          { id: "c", label: "Anxious and a little left out, but I say it's fine.", weight: -5 },
+          { id: "d", label: "Upset and betrayed. I try to make them feel guilty about going.", weight: -10 }
+        ]
+      },
+      { id: 8, text: "After *you* make a mistake and hurt your partner, what is your first instinct?", category: 'communication',
+        options: [
+          { id: "a", label: "Apologize sincerely, take responsibility, and ask how to fix it.", weight: 10 },
+          { id: "b", label: "Say 'I'm sorry' just to end the argument.", weight: 0 },
+          { id: "c", label: "Get defensive and explain *why* my actions were justified.", weight: -5 },
+          { id: "d", label: "Blame them for being 'too sensitive' or for their part in it.", weight: -10 }
+        ]
+      },
+      { id: 9, text: "When you think about your long-term future (5-10 years)...", category: 'communication',
+        options: [
+          { id: "a", label: "We have a clear, shared vision that we're both excited about.", weight: 10 },
+          { id: "b", label: "We've talked about it and are on the same general page.", weight: 5 },
+          { id: "c", label: "We never talk about it; it's too scary.", weight: -5 },
+          { id: "d", label: "We have very different goals and don't know how to compromise.", weight: -10 }
+        ]
+      },
+      { id: 10, text: "How often do you express genuine, unprompted affection (a compliment, a 'thank you', a hug)?", category: 'empathy',
+        options: [
+          { id: "a", label: "Daily. It's a natural part of our interaction.", weight: 10 },
+          { id: "b", label: "Several times a week.", weight: 5 },
+          { id: "c", label: "Mostly on special occasions or when one of us is sad.", weight: 0 },
+          { id: "d", label: "Rarely. They should already know I care.", weight: -10 }
+        ]
+      },
+      { id: 11, text: "Your partner brings up a flaw or annoying habit of yours. You...", category: 'conflict',
+        options: [
+          { id: "a", label: "Listen without getting defensive and consider their point.", weight: 10 },
+          { id: "b", label: "Feel a little hurt, but accept it as fair feedback.", weight: 5 },
+          { id: "c", label: "Immediately point out one of *their* flaws.", weight: -10 },
+          { id: "d", label: "Shut down, get angry, or start an argument.", weight: -5 }
+        ]
+      },
+      { id: 12, text: "When your partner is talking about something important to them, you are usually...", category: 'communication',
+        options: [
+          { id: "a", label: "Fully engaged, phone down, making eye contact.", weight: 10 },
+          { id: "b", label: "Listening, but also thinking about my own reply.", weight: 5 },
+          { id: "c", label: "Half-listening, probably multitasking (on phone, watching TV).", weight: -5 },
+          { id: "d", label: "Waiting for them to finish so I can change the subject.", weight: -10 }
+        ]
+      },
+      { id: 13, text: "After they apologize for a *small* mistake, how do you react?", category: 'conflict',
+        options: [
+          { id: "a", label: "Genuinely forgive them and don't bring it up again.", weight: 10 },
+          { id: "b", label: "Say 'it's fine' but I'm still a little annoyed.", weight: 0 },
+          { id: "c", label: "I use it as an opportunity to remind them of *other* mistakes.", weight: -10 },
+          { id: "d", label: "I give them the cold shoulder for a while.", weight: -5 }
+        ]
+      },
+      { id: 14, text: "Someone attractive is clearly flirting with your partner at a party. You...", category: 'trust',
+        options: [
+          { id: "a", label: "Feel confident. I trust my partner to handle it.", weight: 10 },
+          { id: "b", label: "Go over and join the conversation, politely marking my territory.", weight: 5 },
+          { id: "c", label: "Watch them from across the room, feeling sick with jealousy.", weight: -5 },
+          { id: "d", label: "Start a fight with my partner or the other person.", weight: -10 }
+        ]
+      },
+      { id: 15, text: "What's your 'go-to' way to reconnect after a busy or stressful week?", category: 'empathy',
+        options: [
+          { id: "a", label: "Quality time with no distractions, just talking and connecting.", weight: 10 },
+          { id: "b", label: "A shared activity (e.g., dinner, a movie, a walk).", weight: 5 },
+          { id: "c", label: "Just sitting in the same room on our phones is enough.", weight: 0 },
+          { id: "d", label: "We don't. We just drift until the next weekend.", weight: -5 }
+        ]
+      },
+      { id: 16, text: "You disagree on a major life value (e.g., money, religion, family).", category: 'conflict',
+        options: [
+          { id: "a", label: "We accept our differences and respect each other's views.", weight: 10 },
+          { id: "b", label: "We're trying to find a middle ground.", weight: 5 },
+          { id: "c", label: "We just avoid the topic entirely.", weight: -5 },
+          { id: "d", label: "I am actively trying to change their mind.", weight: -10 }
+        ]
+      },
+      { id: 17, text: "How often do you two just laugh hard or do something silly together?", category: 'empathy',
+        options: [
+          { id: "a", label: "All the time. We share a great sense of humor.", weight: 10 },
+          { id: "b", label: "Fairly often. We have our moments.", weight: 5 },
+          { id: "c", label: "Things have gotten pretty serious and routine.", weight: -5 },
+          { id: "d", label: "I can't remember the last time we really laughed together.", weight: -10 }
+        ]
+      },
+      { id: 18, text: "Does your partner inspire you to be a better person?", category: 'empathy',
+        options: [
+          { id: "a", label: "Yes, they actively support my goals and growth.", weight: 10 },
+          { id: "b", label: "Yes, just by being who they are.", weight: 5 },
+          { id: "c", label: "Not really, we're just comfortable as we are.", weight: 0 },
+          { id: "d", label: "No, I sometimes feel they hold me back.", weight: -10 }
+        ]
+      },
+      { id: 19, text: "When you're with your partner, do you feel you can be 100% your 'weirdest' self?", category: 'trust',
+        options: [
+          { id: "a", label: "Absolutely. They love my quirks and I love theirs.", weight: 10 },
+          { id: "b", label: "Mostly, but I hold back on some things.", weight: 5 },
+          { id: "c", label: "No, I feel I have to be the 'best version' of myself.", weight: -5 },
+          { id: "d", label: "No, I feel judged for my real interests or humor.", weight: -10 }
+        ]
+      },
+      { id: 20, text: "Thinking about your relationship, your most common feeling is:", category: 'trust',
+        options: [
+          { id: "a", label: "Peace, security, and happiness.", weight: 10 },
+          { id: "b", label: "Contentment and stability.", weight: 5 },
+          { id: "c", label: "Anxiety, uncertainty, or dread.", weight: -10 },
+          { id: "d", label: "Boredom or a feeling of being 'stuck'.", weight: -5 }
+        ]
+      }
+    ];
+
+    // --- Buckets and insights (Renamed) ---
+    const APP_TYPES = [
+      { name: 'The Strain', min: 1, max: 35 },
+      { name: 'The Disconnect', min: 36, max: 55 },
+      { name: 'The Comfort Zone', min: 56, max: 70 },
+      { name: 'The Partnership', min: 71, max: 85 },
+      { name: 'The Sync', min: 86, max: 100 }
+    ];
+    
+    // Updated function to use new types
+    function typeFromScore(score) { 
+      const t = APP_TYPES.find(t => score >= t.min && score <= t.max); 
+      return t ? t.name : 'The Comfort Zone'; // Default to a neutral type
+    }
+    
+    // New insights object
+    const APP_INSIGHTS = {
+      'The Sync': "You share deep trust, empathy, and communication. Your bond is your strength. Cherish it, but remember to maintain your individual selves.",
+      'The Partnership': "You have a strong, healthy, and respectful bond built on a solid foundation. Focus on keeping the spark alive and not letting routine dull your connection.",
+      'The Comfort Zone': "Your relationship is stable and comfortable, but may be stuck in a rut. Reintroduce vulnerability and shared *new* experiences to deepen your connection.",
+      'The Disconnect': "There are signs of insecurity, poor communication, or emotional distance. It's time for an honest, gentle conversation about your unmet needs.",
+      'The Strain': "This bond shows significant stress, mistrust, or conflict. Prioritizing your own well-being is crucial. Professional guidance may be needed."
+    };
+
+    // --- Scoring and report ---
+    function scoreToPercent(rawSum, totalQuestions = 1, minPerQ = -10, maxPerQ = 10, jitterSpan = 0) {
+      const minScore = totalQuestions * minPerQ, maxScore = totalQuestions * maxPerQ, range = maxScore - minScore;
+      // Handle divide by zero if range is 0 (e.g., only one question or all same weight)
+      if (range === 0) {
+          // If all questions answered and rawSum is positive, return 100, else 0.
+          // Handle case where totalQuestions is 0 to avoid NaN/Infinity issues.
+          if (totalQuestions === 0) return 50; // Neutral score if no questions
+          return rawSum >= 0 ? 100 : 0;
+      }
+      let percent = Math.round(((rawSum - minScore) / range) * 100);
+      // Add jitter only to the main score
+      const jitter = Math.floor(Math.random() * (jitterSpan + 1)) - Math.floor(jitterSpan / 2);
+      return Math.max(1, Math.min(100, percent + jitter));
+    }
+
+
+    // SIMPLIFIED buildReport function
+    function buildReport(score, type) {
+      const core = APP_INSIGHTS[type] || "Your profile balances multiple instincts. Keep iterating deliberately.";
+      return `${core}`; // Only returns the main insight
+    }
+
+    // --- Render root ---
+    function render() {
+      if (appState.page === 'home') appRoot.innerHTML = renderHomePage();
+      else if (appState.page === 'quiz') appRoot.innerHTML = renderQuizPage();
+      else if (appState.page === 'loading') appRoot.innerHTML = renderLoadingPage();
+      else if (appState.page === 'result') appRoot.innerHTML = renderResultPage();
+      else if (appState.page === 'about') appRoot.innerHTML = renderAboutPage();
+    }
+
+    // --- Pages (Upgraded with data-actions and ARIA) ---
+    function renderHomePage() {
+      return `
+        <div class="flex flex-col items-center justify-center p-6 text-center">
+          <div class="glass-card rounded-3xl shadow-2xl p-8 md:p-14 animate-[subtle-pulse_5s_infinite]">
+            <h1 tabindex="-1" class="text-6xl md:text-7xl font-extrabold tracking-tight leading-tight text-gray-900">
+              Love<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500">Meter</span>
+            </h1>
+            <p class="mt-5 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+              How strong is your bond? Answer 20 real-world scenarios to discover your relationship's profile and get instant, actionable insights.
+            </p>
+            <div class="mt-6 flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
+              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-pink-50 text-pink-700 border border-pink-100">Private & Secure</div>
+              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-red-50 text-red-700 border border-red-100">Actionable Insights</div>
+              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">Instant Profile</div>
+            </div>
+            <div class="my-8 h-px bg-gradient-to-r from-transparent via-pink-300 to-transparent"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
+                <span class="text-pink-600 font-black text-4xl block">20</span>
+                <p class="text-sm font-semibold text-pink-700 mt-1">Relationship Scenarios</p>
+                <p class="text-xs text-slate-500 mt-1">Nuanced, real-life choices</p>
+              </div>
+              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
+                <span class="text-red-600 font-black text-4xl block">1–100</span>
+                <p class="text-sm font-semibold text-red-700 mt-1">Bond Score</p>
+                <p class="text-xs text-slate-500 mt-1">Benchmarked distribution</p>
+              </div>
+              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
+                <span class="text-slate-700 font-black text-4xl block">5</span>
+                <p class="text-sm font-semibold text-slate-700 mt-1">Relationship Profiles</p>
+                <p class="text-xs text-slate-500 mt-1">Memorable profiles</p>
+              </div>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <button type="button" data-action="start-quiz" class="cta inline-flex items-center justify-center px-10 md:px-14 py-4 rounded-full font-extrabold text-lg md:text-2xl tracking-wide uppercase cursor-pointer select-none">
+                <span class="relative z-10">Start Test</span>
+                <svg class="relative z-10 ml-3 h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M20 12H4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+              <p class="text-xs text-gray-400">Private, client‑side scoring. No registration required.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderQuizPage() {
+      const qIndex = appState.currentIndex;
+      const q = QUESTIONS[qIndex];
+      const progress = Math.round((qIndex / QUESTIONS.length) * 100);
+      const selected = appState.answers.find(a => a.questionId === q.id);
+      const options = seededShuffle(q.options, USER_SEED + ':' + q.id);
+
+      return `
+        <div class="max-w-3xl mx-auto">
+          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-10">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-sm text-gray-600">Question ${qIndex + 1} of ${QUESTIONS.length}</div>
+              <div class="w-40">
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden"
+                     role="progressbar"
+                     aria-valuenow="${progress}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-label="Quiz progress">
+                  <div class="progress-sheen h-full bg-gradient-to-r from-pink-400 to-red-400 transition-all duration-500 ease-out" style="width:${progress}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <h2 tabindex="-1" class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">${q.text}</h2>
+
+            <div class="grid gap-3">
+              ${options.map(opt => {
+                const isSel = selected && selected.optionId === opt.id;
+                const base = "text-left px-4 py-3 rounded-xl border transition";
+                const cls = isSel ? "border-pink-400 bg-pink-50 text-pink-900" : "border-gray-200 bg-white text-gray-800 hover:border-pink-300 hover:bg-pink-50";
+                
+                return `
+                  <button type="button" 
+                          data-action="select-option"
+                          data-question-id="${q.id}"
+                          data-option-id="${opt.id}"
+                          data-weight="${opt.weight}"
+                          class="${base} ${cls}">
+                    ${opt.label}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button data-action="prev-question" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 ${qIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${qIndex === 0 ? 'disabled' : ''}>Back</button>
+              <!-- "Next" button is hidden because of auto-advance, but kept for non-JS or as a fallback if needed -->
+              <button data-action="next-question" id="nextBtn" class="px-5 py-2 rounded-xl bg-pink-600 text-white hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed ${!selected ? '' : 'hidden'}" ${selected ? "disabled" : ""}>
+                ${qIndex === QUESTIONS.length - 1 ? "Finish" : "Next"}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLoadingPage() {
+      return `
+        <div class="flex flex-col items-center justify-center py-16">
+          <div class="glass-card rounded-3xl shadow-2xl p-10 text-center">
+            <div class="w-16 h-16 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 role="alert" class="text-xl font-semibold text-gray-900">Analyzing your bond...</h3>
+            <p class="text-gray-600">Calculating your connection profile...</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderResultPage() {
+      const result = appState.resultData;
+      if (!result || !result.categoryScores || !result.strength || !result.growth) { // Added checks
+        console.error("Result data is incomplete:", result);
+        return `<div class="p-6 text-center">Error calculating results. <button data-action="retest" class="text-pink-600 underline font-semibold hover:text-pink-800">Try Again</button></div>`;
+      }
+
+      const shareId = appState.shareId || ensureShareId(result);
+      const typeColor = getColorForType(result.type);
+      const typeColorDark = getDarkColorForType(result.type);
+      const typeColorGlow = getColorGlowForType(result.type);
+      const reportText = buildReport(result.score, result.type);
+      const typeEmoji = getEmojiForType(result.type);
+
+      // Trigger confetti for high scores
+      if (result.score >= 80) {
+        setTimeout(() => triggerConfetti(), 600);
+      }
+
+      return `
+        <div class="max-w-6xl mx-auto">
+          <!-- Main Result Card -->
+          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-12 result-card mb-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+
+              <!-- Left: Enhanced Gauge Section -->
+              <div class="flex flex-col items-center">
+                <div class="gauge-enhanced" 
+                     style="--value:${result.score}; --color:${typeColor}; --color-dark:${typeColorDark}; --color-glow:${typeColorGlow};"
+                     role="meter"
+                     aria-label="Your relationship score"
+                     aria-valuenow="${result.score}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                  <div class="gauge-content-enhanced">
+                    <div class="emoji-icon-enhanced">${typeEmoji}</div>
+                    <div class="score-number-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">${result.score}</div>
+                    <div class="score-label">Bond Score</div>
+                  </div>
+                </div>
+                <div class="badge-enhanced mt-8" style="background:${typeColor};">${result.type}</div>
+              </div>
+
+              <!-- Right: Profile Description -->
+              <div class="profile-section-enhanced">
+                <h2 class="profile-title-enhanced">💖 Your Relationship Profile</h2>
+                <p class="text-gray-600 text-lg font-medium leading-relaxed">Congratulations on completing the assessment! Here's your personalized relationship analysis based on your responses.</p>
+
+                <div class="profile-description-enhanced" style="--color:${typeColor};">
+                  ${reportText}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 flex flex-wrap gap-3">
+                  <button data-action="copy-share" data-share-id="${shareId}" class="btn-enhanced btn-gradient-enhanced">
+                    <span>📤</span>
+                    <span>Share Result</span>
+                  </button>
+                  <button data-action="retest" class="btn-enhanced btn-outline-enhanced">
+                    <span>🔄</span>
+                    <span>Retake Test</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- NEW: Strength and Growth Area -->
+            <div class="mt-12 profile-section-enhanced" style="animation-delay: 600ms;">
+               <div class="grid md:grid-cols-2 gap-6">
+                 <!-- Strength -->
+                 <div class="bg-emerald-50 border-l-4 border-emerald-400 p-6 rounded-2xl shadow-lg">
+                   <h3 class="text-xl font-bold text-emerald-800 mb-2">Key Strength</h3>
+                   <p class="text-sm text-gray-600 mb-3">You showed strong positive behavior in this area:</p>
+                   <p class="text-base font-semibold text-emerald-900">${result.strength.question}</p>
+                 </div>
+                 <!-- Growth -->
+                 <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-2xl shadow-lg">
+                   <h3 class="text-xl font-bold text-amber-800 mb-2">Growth Area</h3>
+                   <p class="text-sm text-gray-600 mb-3">This scenario challenged you the most:</p>
+                   <p class="text-base font-semibold text-amber-900">${result.growth.question}</p>
+                 </div>
+               </div>
+            </div>
+
+
+            <!-- ENHANCED: Real Stats Section -->
+            <div class="stats-grid-enhanced">
+              <div class="stat-card-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">
+                <div class="stat-title-enhanced">Bond Score</div>
+                <div class="stat-value-enhanced">${result.score}</div>
+                <div class="stat-desc-enhanced">Your overall rating</div>
+              </div>
+              
+              <div class="stat-card-enhanced" style="--color:#f59e0b; --color-dark:#d97706;">
+                <div class="stat-title-enhanced">Trust Score</div>
+                <div class="stat-value-enhanced">${result.categoryScores.trust}</div>
+                <div class="stat-desc-enhanced">Security & Faith</div>
+              </div>
+              
+              <div class="stat-card-enhanced" style="--color:#3b82f6; --color-dark:#2563eb;">
+                <div class="stat-title-enhanced">Communication</div>
+                <div class="stat-value-enhanced">${result.categoryScores.communication}</div>
+                <div class="stat-desc-enhanced">Honesty & Listening</div>
+              </div>
+              
+              <div class="stat-card-enhanced" style="--color:#10b981; --color-dark:#059669;">
+                <div class="stat-title-enhanced">Empathy Score</div>
+                <div class="stat-value-enhanced">${result.categoryScores.empathy}</div>
+                <div class="stat-desc-enhanced">Support & Affection</div>
+              </div>
+
+              <div class="stat-card-enhanced" style="--color:#ef4444; --color-dark:#dc2626;">
+                <div class="stat-title-enhanced">Conflict Score</div>
+                <div class="stat-value-enhanced">${result.categoryScores.conflict}</div>
+                <div class="stat-desc-enhanced">Resolution & Teamwork</div>
+              </div>
+
+              <div class="stat-card-enhanced" style="--color:#ec4899; --color-dark:#db2777;">
+                <div class="stat-title-enhanced">Completion</div>
+                <div class="stat-value-enhanced">100%</div>
+                <div class="stat-desc-enhanced">${result.answers?.length || 0} questions answered</div> 
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+
+    // --- NEW Helper functions for love theme ---
+    function getColorForType(type) {
+      const colors = {
+        'The Sync': '#10b981', // Green
+        'The Partnership': '#3b82f6', // Blue
+        'The Comfort Zone': '#f59e0b', // Amber
+        'The Disconnect': '#6366f1', // Indigo
+        'The Strain': '#ef4444', // Red
+      };
+      return colors[type] || '#ec4899'; // Default pink
+    }
+
+    function getDarkColorForType(type) {
+      const colors = {
+        'The Sync': '#059669',
+        'The Partnership': '#2563eb',
+        'The Comfort Zone': '#d97706',
+        'The Disconnect': '#4f46e5',
+        'The Strain': '#dc2626',
+      };
+      return colors[type] || '#db2777';
+    }
+
+    function getColorGlowForType(type) {
+      const colors = {
+        'The Sync': 'rgba(16, 185, 129, 0.4)',
+        'The Partnership': 'rgba(59, 130, 246, 0.4)',
+        'The Comfort Zone': 'rgba(245, 158, 11, 0.4)',
+        'The Disconnect': 'rgba(99, 102, 241, 0.4)',
+        'The Strain': 'rgba(239, 68, 68, 0.4)',
+      };
+      return colors[type] || 'rgba(236, 72, 153, 0.4)';
+    }
+    
+    function getEmojiForType(type) {
+      switch (type) {
+        case 'The Sync': return '💖';
+        case 'The Partnership': return '🤝';
+        case 'The Comfort Zone': return '🛋️';
+        case 'The Disconnect': return '💔';
+        case 'The Strain': return '⚡️';
+        default: return '❤️';
+      }
+    }
+    // --- End new helpers ---
+
+    // Confetti animation function
+    function triggerConfetti() {
+      const colors = ['#ec4899', '#f87171', '#f472b6', '#10b981', '#3b82f6', '#f59e0b'];
+      const confettiCount = 60;
+
+      for (let i = 0; i < confettiCount; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.top = '-20px';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 3500);
+        }, i * 25);
+      }
+    }
+
+    // Toast notification function
+    function showToast(message, emoji = '✅') {
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.innerHTML = `<span style="font-size: 1.5rem;">${emoji}</span><span>${message}</span>`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'fadeInUp 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function renderAboutPage() {
+      return `
+        <div class="max-w-3xl mx-auto">
+          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-10">
+            <h2 tabindex="-1" class="text-2xl font-bold text-gray-900">About LoveMeter</h2>
+            <p class="text-gray-700 mt-2">
+              LoveMeter maps your choices across common relationship scenarios to a normalized 1–100 score and a relationship profile. It also calculates scores for key areas like Trust, Communication, Empathy, and Conflict Resolution.
+            </p>
+            <div class="bg-white/80 backdrop-blur p-6 rounded-2xl shadow-xl border border-gray-100 mt-6">
+              <h3 class="text-lg font-semibold text-pink-600">Consent & Privacy</h3>
+              <p class="text-gray-700 mt-2">
+                Your answers are scored locally in your browser. If you share a link, only your final score, type, and category scores are saved (individual answers are not shared).
+                You can delete stored results anytime by clearing your browser data for this site.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- Quiz logic ---
+    function selectOption(questionId, optionId, weight) {
+      const idx = appState.answers.findIndex(a => a.questionId === questionId);
+      const questionCategory = QUESTIONS.find(q => q.id === questionId)?.category || 'general';
+      const entry = { questionId, optionId, weight, category: questionCategory };
+      
+      if (idx >= 0) appState.answers[idx] = entry; 
+      else appState.answers.push(entry);
+      
+      render(); // Refresh UI to show selection
+      
+      // ENHANCEMENT: Auto-advance
+      setTimeout(() => {
+        nextQuestion(true); // Pass flag to indicate it's an auto-advance
+      }, 350);
+    }
+    
+    function nextQuestion(isAutoAdvance = false) {
+      const qIndex = appState.currentIndex;
+      
+      // If called by "Next" button, check for answer
+      if (!isAutoAdvance) {
+        const q = QUESTIONS[qIndex];
+         // Ensure q is defined before accessing its properties
+        if (!q) {
+             console.error("Current question is undefined at index:", qIndex);
+             return; // Stop execution if question is not found
+         }
+        const answered = appState.answers.some(a => a.questionId === q.id);
+        if (!answered) return;
+      }
+
+      if (qIndex < QUESTIONS.length - 1) {
+        appState.currentIndex++;
+        render();
+      } else {
+        // --- ENHANCED: Calculate final results ---
+        const totalRaw = appState.answers.reduce((sum, a) => sum + a.weight, 0);
+        const finalPercent = scoreToPercent(totalRaw, QUESTIONS.length, -10, 10, 6); // Add jitter to main score
+        const finalType = typeFromScore(finalPercent);
+        
+        // ENHANCED: Calculate category scores
+        const categories = ['trust', 'communication', 'empathy', 'conflict'];
+        const categoryScores = {};
+        
+        categories.forEach(cat => {
+          const catAnswers = appState.answers.filter(a => a.category === cat);
+          const catRaw = catAnswers.reduce((sum, a) => sum + a.weight, 0);
+          // Pass the correct number of questions for the category
+          categoryScores[cat] = scoreToPercent(catRaw, catAnswers.length); // No jitter for sub-scores
+        });
+
+        // ENHANCED: Find Strength and Growth
+        // Ensure there are answers before trying to reduce
+        if(appState.answers.length === 0) {
+            console.error("No answers recorded to calculate strength/growth.");
+             // Handle this case appropriately, maybe show default messages or skip this part
+             appState.resultData = { 
+                 score: finalPercent, 
+                 type: finalType, 
+                 ts: Date.now(), 
+                 answers: [], // Pass empty array
+                 categoryScores: categoryScores, // Pass calculated scores
+                 strength: { question: "N/A" }, // Default text
+                 growth: { question: "N/A" } // Default text
+             };
+        } else {
+             const strengthAnswer = appState.answers.reduce((max, a) => (a.weight > max.weight ? a : max), appState.answers[0]);
+             const growthAnswer = appState.answers.reduce((min, a) => (a.weight < min.weight ? a : min), appState.answers[0]);
+             
+             const strengthQuestion = QUESTIONS.find(q => q.id === strengthAnswer.questionId)?.text || "Your strongest area of connection.";
+             const growthQuestion = QUESTIONS.find(q => q.id === growthAnswer.questionId)?.text || "An area with potential for growth.";
+
+             appState.resultData = { 
+                 score: finalPercent, 
+                 type: finalType, 
+                 ts: Date.now(), 
+                 answers: appState.answers, // Keep answers for potential future use, but don't save them in shared link
+                 categoryScores: categoryScores,
+                 strength: { question: strengthQuestion },
+                 growth: { question: growthQuestion }
+             };
+        }
+        
+        setPage('loading');
+        setTimeout(() => setPage('result'), 1200);
+      }
+    }
+    function prevQuestion() {
+      if (appState.currentIndex > 0) { appState.currentIndex--; render(); }
+    }
+    
+    function retest(isNav = false) {
+      appState.currentIndex = 0; 
+      appState.answers = []; 
+      appState.resultData = null; 
+      appState.shareId = null;
+      history.replaceState(null, '', location.pathname);
+      if (!isNav) {
+        setPage('quiz');
+      }
+    }
+
+    // --- Share / persistence ---
+    function ensureShareId(resultObj) {
+        if (appState.shareId) return appState.shareId;
+        const id = Math.random().toString(36).slice(2, 8);
+        // Only save necessary, non-sensitive data for sharing
+        const savedResult = { 
+            score: resultObj.score,
+            type: resultObj.type,
+            ts: resultObj.ts,
+            categoryScores: resultObj.categoryScores, // Include category scores
+            strength: resultObj.strength, // Include strength/growth for context
+            growth: resultObj.growth 
+        };
+        localStorage.setItem('cm:' + id, JSON.stringify(savedResult));
+        appState.shareId = id; 
+        return id;
+    }
+
+
+    function copyShare(id, buttonElement) {
+      const url = location.origin + location.pathname + '?share=' + id;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          const originalTextSpan = buttonElement.querySelector('span:last-child');
+          if (originalTextSpan) {
+            const originalText = originalTextSpan.textContent;
+            originalTextSpan.textContent = 'Copied!';
+            buttonElement.disabled = true;
+            setTimeout(() => {
+              originalTextSpan.textContent = originalText;
+              buttonElement.disabled = false;
+            }, 2000);
+          }
+        }).catch(() => {
+          prompt('Copy this link:', url); // Fallback if clipboard fails
+        });
+      } else {
+        prompt('Copy this link:', url); // Fallback for older browsers
+      }
+    }
+
+    // --- Start the app ---
+    window.addEventListener('DOMContentLoaded', initApp);
+
+  </script>
+</body>
+</html>
+
