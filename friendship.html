@@ -5,14 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FriendshipMeter • Bond Test</title>
   
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- All CSS from the original file, unchanged -->
   <style>
+    /* --- NEW ADDITIONS FOR MOBILE UX --- */
+    html {
+      -webkit-text-size-adjust: 100%; /* Prevent iOS text size adjust on landscape */
+      -moz-text-size-adjust: 100%;    /* Prevent Firefox text size adjust */
+      text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    }
+    /* --- END NEW ADDITIONS --- */
+
     body {
       font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
       background:
@@ -25,6 +31,12 @@
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #a78bfa; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
+
+    /* --- NEW ADDITION FOR MOBILE UX --- */
+    button, [role="button"], [data-action] {
+      touch-action: manipulation; /* Disables double-tap to zoom delay on mobile */
+    }
+    /* --- END NEW ADDITION --- */
 
     @keyframes subtle-pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(109,40,217,.28);} 50%{ box-shadow:0 0 24px 8px rgba(109,40,217,.18);} }
     .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(18px) saturate(120%); -webkit-backdrop-filter: blur(18px) saturate(120%); border: 1px solid rgba(148,163,184,0.22); }
@@ -992,7 +1004,7 @@
   
   .print-optimized {
     background: white !important;
-    color: black !important;
+    color: black !imptant;
   }
 }
 
@@ -1068,7 +1080,6 @@
 </head>
 <body class="min-h-screen antialiased">
 
-  <!-- Header: Updated Title -->
   <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-sm shadow-md">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
       <div class="text-2xl font-extrabold text-gray-900">
@@ -1083,7 +1094,6 @@
 
   <main id="app" class="max-w-6xl mx-auto p-6 md:p-10"></main>
 
-  <!-- --- NEW PLEDGE MODAL (Updated Text) --- -->
   <div id="pledge-modal" class="modal-overlay hidden">
     <div class="modal-content glass-card rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-4">🤝</div>
@@ -1096,8 +1106,6 @@
       </button>
     </div>
   </div>
-  <!-- --- END PLEDGE MODAL --- -->
-
   <script type="module">
     // --- REFACTORED JAVASCRIPT ---
 
@@ -1596,11 +1604,9 @@
 
       return `
         <div class="max-w-6xl mx-auto">
-          <!-- Main Result Card -->
           <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-12 result-card mb-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
 
-              <!-- Left: Enhanced Gauge Section -->
               <div class="flex flex-col items-center">
                 <div class="gauge-enhanced" 
                      style="--value:${result.score}; --color:${typeColor}; --color-dark:${typeColorDark};"
@@ -1618,7 +1624,6 @@
                 <div class="badge-enhanced mt-8" style="background:${typeColor};">${result.type}</div>
               </div>
 
-              <!-- Right: Profile Description -->
               <div class="profile-section-enhanced">
                 <h2 class="profile-title-enhanced visual-hierarchy">🎯 Your Friendship Profile</h2>
                 <p class="text-gray-600 text-lg font-medium leading-relaxed text-readable">Congratulations on completing the assessment! Here's your personalized friendship analysis based on your responses.</p>
@@ -1627,7 +1632,6 @@
                   ${reportText}
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="mt-8 flex flex-wrap gap-3">
                   <button data-action="copy-share" data-share-id="${shareId}" class="btn-enhanced btn-gradient-enhanced touch-target focus-enhanced">
                     <span>📤</span>
@@ -1647,7 +1651,6 @@
               </div>
             </div>
 
-            <!-- Enhanced Stats Section -->
             <div class="stats-grid-enhanced">
               <div class="stat-card-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">
                 <div class="stat-title-enhanced">Overall Score</div>
