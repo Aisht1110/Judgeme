@@ -1,0 +1,24 @@
+/* These are your original Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ⬇️ Paste all your custom CSS from the <style> block here ⬇️ 
+*/
+
+/* Base */
+html { scroll-behavior: smooth; }
+body { font-feature-settings: "rlig" 1, "calt" 1; }
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  /* ...and so on for all your other custom classes... */
+}
+
+/* ... all the way down to ... */
+
+.icon-pulse {
+  animation: bounce-subtle 2s infinite;
+}
