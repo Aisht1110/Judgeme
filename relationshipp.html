@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>LoveMeter • Relationship Test</title>
   
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- All CSS is now back inside the <style> tag -->
   <style>
     body {
       font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
@@ -20,6 +17,7 @@
         radial-gradient(900px 500px at 90% 20%, rgba(248, 113, 113, 0.12), transparent 60%),
         linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -142,418 +140,446 @@
     /* --- END STAT CARD & ANIMATION STYLES --- */
 
   
-/* ========== ENHANCED RESULT PAGE STYLES ========== */
+    /* ========== ENHANCED RESULT PAGE STYLES ========== */
 
-/* Smooth entrance animations */
-@keyframes slideInScale {
-  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
+    /* Smooth entrance animations */
+    @keyframes slideInScale {
+      0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(25px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(25px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
 
-@keyframes bounceIn {
-  0% { opacity: 0; transform: scale(0.3); }
-  50% { opacity: 1; transform: scale(1.08); }
-  70% { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: 1; transform: scale(1.08); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
 
-@keyframes floatBadge {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
 
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
 
-@keyframes pulseGlow {
-  0%, 100% { 
-    box-shadow: 0 0 30px var(--color-glow, rgba(236,72,153,0.4)),
-                0 0 60px var(--color-glow, rgba(236,72,153,0.2)); 
-  }
-  50% { 
-    box-shadow: 0 0 50px var(--color-glow, rgba(236,72,153,0.6)),
-                0 0 80px var(--color-glow, rgba(236,72,153,0.3)); 
-  }
-}
+    @keyframes pulseGlow {
+      0%, 100% { 
+        box-shadow: 0 0 30px var(--color-glow, rgba(236,72,153,0.4)),
+                    0 0 60px var(--color-glow, rgba(236,72,153,0.2)); 
+      }
+      50% { 
+        box-shadow: 0 0 50px var(--color-glow, rgba(236,72,153,0.6)),
+                    0 0 80px var(--color-glow, rgba(236,72,153,0.3)); 
+      }
+    }
 
-@keyframes confettiFall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
 
-/* Enhanced result card */
-.result-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92)) !important;
-  animation: slideInScale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
-}
+    /* Enhanced result card */
+    .result-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92)) !important;
+      animation: slideInScale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    }
 
-/* Improved gauge with progress ring */
-.gauge-enhanced {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.9));
-  box-shadow: 
-    0 25px 50px rgba(0,0,0,0.12),
-    inset 0 -3px 15px rgba(0,0,0,0.05),
-    inset 0 3px 15px rgba(255,255,255,0.9);
-  animation: bounceIn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
+    /* Improved gauge with progress ring */
+    .gauge-enhanced {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.9));
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.12),
+        inset 0 -3px 15px rgba(0,0,0,0.05),
+        inset 0 3px 15px rgba(255,255,255,0.9);
+      animation: bounceIn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
 
-.gauge-enhanced::before {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from -90deg,
-    var(--color, #ec4899) 0%,
-    var(--color, #ec4899) calc(var(--value, 0) * 3.6deg),
-    rgba(226,232,240,0.4) calc(var(--value, 0) * 3.6deg),
-    rgba(226,232,240,0.4) 360deg
-  );
-  mask: radial-gradient(closest-side, transparent 86%, white 87%);
-  -webkit-mask: radial-gradient(closest-side, transparent 86%, white 87%);
-  animation: pulseGlow 3s ease-in-out infinite;
-}
+    .gauge-enhanced::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from -90deg,
+        var(--color, #ec4899) 0%,
+        var(--color, #ec4899) calc(var(--value, 0) * 3.6deg),
+        rgba(226,232,240,0.4) calc(var(--value, 0) * 3.6deg),
+        rgba(226,232,240,0.4) 360deg
+      );
+      mask: radial-gradient(closest-side, transparent 86%, white 87%);
+      -webkit-mask: radial-gradient(closest-side, transparent 86%, white 87%);
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
 
-.gauge-enhanced::after {
-  content: '';
-  position: absolute;
-  inset: -22px;
-  border-radius: 50%;
-  background: inherit;
-  filter: blur(20px);
-  opacity: 0.3;
-  z-index: -1;
-}
+    .gauge-enhanced::after {
+      content: '';
+      position: absolute;
+      inset: -22px;
+      border-radius: 50%;
+      background: inherit;
+      filter: blur(20px);
+      opacity: 0.3;
+      z-index: -1;
+    }
 
-.gauge-content-enhanced {
-  text-align: center;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+    .gauge-content-enhanced {
+      text-align: center;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
 
-.score-number-enhanced {
-  font-size: 4rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -3px;
-  line-height: 1;
-  text-shadow: 0 2px 10px rgba(236,72,153,0.2);
-}
+    .score-number-enhanced {
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -3px;
+      line-height: 1;
+      text-shadow: 0 2px 10px rgba(236,72,153,0.2);
+    }
 
-.emoji-icon-enhanced {
-  font-size: 3.5rem;
-  animation: bounceIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s forwards;
-  opacity: 0;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-}
+    .emoji-icon-enhanced {
+      font-size: 3.5rem;
+      animation: bounceIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s forwards;
+      opacity: 0;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
 
-.score-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
+    .score-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
 
-/* Enhanced badge with shimmer */
-.badge-enhanced {
-  padding: 14px 32px;
-  border-radius: 50px;
-  color: white;
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  box-shadow: 
-    0 12px 30px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.35),
-    inset 0 -1px 0 rgba(0,0,0,0.2);
-  animation: floatBadge 3.5s ease-in-out infinite;
-  position: relative;
-  overflow: hidden;
-}
+    /* Enhanced badge with shimmer */
+    .badge-enhanced {
+      padding: 14px 32px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      box-shadow: 
+        0 12px 30px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.35),
+        inset 0 -1px 0 rgba(0,0,0,0.2);
+      animation: floatBadge 3.5s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
 
-.badge-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: shimmer 3s infinite;
-}
+    .badge-enhanced::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 150%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 3s infinite;
+    }
 
-/* Profile section improvements */
-.profile-section-enhanced {
-  animation: fadeInUp 0.7s ease-out 0.4s forwards;
-  opacity: 0;
-}
+    /* Profile section improvements */
+    .profile-section-enhanced {
+      animation: fadeInUp 0.7s ease-out 0.4s forwards;
+      opacity: 0;
+    }
 
-.profile-title-enhanced {
-  font-size: 2.75rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #1e293b, #475569);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1.25rem;
-  line-height: 1.1;
-}
+    .profile-title-enhanced {
+      font-size: 2.75rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #1e293b, #475569);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+      line-height: 1.1;
+    }
 
-.profile-description-enhanced {
-  font-size: 1.125rem;
-  line-height: 1.9;
-  color: #334155;
-  margin-top: 1.5rem;
-  padding: 1.75rem;
-  background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(241,245,249,0.8));
-  border-radius: 18px;
-  border-left: 5px solid var(--color, #ec4899);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-  backdrop-filter: blur(10px);
-}
+    .profile-description-enhanced {
+      font-size: 1.125rem;
+      line-height: 1.9;
+      color: #334155;
+      margin-top: 1.5rem;
+      padding: 1.75rem;
+      background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(241,245,249,0.8));
+      border-radius: 18px;
+      border-left: 5px solid var(--color, #ec4899);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      backdrop-filter: blur(10px);
+    }
 
-/* Button styles */
-.btn-enhanced {
-  padding: 15px 30px;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  cursor: pointer;
-}
+    /* Button styles */
+    .btn-enhanced {
+      padding: 15px 30px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+    }
 
-.btn-enhanced:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+    .btn-enhanced:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
 
-.btn-enhanced:active {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
+    .btn-enhanced:active {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 
-.btn-gradient-enhanced {
-  background: linear-gradient(135deg, #ec4899, #f87171);
-  color: white;
-}
+    .btn-gradient-enhanced {
+      background: linear-gradient(135deg, #ec4899, #f87171);
+      color: white;
+    }
 
-.btn-gradient-enhanced::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #f87171, #ec4899);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
+    .btn-gradient-enhanced::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #f87171, #ec4899);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
 
-.btn-gradient-enhanced:hover::before {
-  opacity: 1;
-}
+    .btn-gradient-enhanced:hover::before {
+      opacity: 1;
+    }
 
-.btn-gradient-enhanced span {
-  position: relative;
-  z-index: 1;
-}
+    .btn-gradient-enhanced span {
+      position: relative;
+      z-index: 1;
+    }
 
-.btn-outline-enhanced {
-  background: white;
-  color: #475569;
-  border: 2.5px solid #e2e8f0;
-}
+    .btn-outline-enhanced {
+      background: white;
+      color: #475569;
+      border: 2.5px solid #e2e8f0;
+    }
 
-.btn-outline-enhanced:hover {
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-color: #cbd5e1;
-}
+    .btn-outline-enhanced:hover {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-color: #cbd5e1;
+    }
 
-.btn-success-enhanced {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-}
+    .btn-success-enhanced {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
 
-.btn-success-enhanced:hover {
-  background: linear-gradient(135deg, #059669, #047857);
-}
+    .btn-success-enhanced:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
 
-/* Stats cards improvement */
-.stats-grid-enhanced {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  margin-top: 3.5rem;
-  animation: fadeInUp 0.7s ease-out 0.8s forwards;
-  opacity: 0;
-}
+    /* Stats cards improvement */
+    .stats-grid-enhanced {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 3.5rem;
+      animation: fadeInUp 0.7s ease-out 0.8s forwards;
+      opacity: 0;
+    }
 
-.stat-card-enhanced {
-  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(249,250,251,0.9));
-  padding: 28px;
-  border-radius: 24px;
-  text-align: center;
-  border: 2px solid rgba(148,163,184,0.15);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
+    .stat-card-enhanced {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(249,250,251,0.9));
+      padding: 28px;
+      border-radius: 24px;
+      text-align: center;
+      border: 2px solid rgba(148,163,184,0.15);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
 
-.stat-card-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color, #ec4899), var(--color-dark, #db2777));
-  transform: scaleX(0);
-  transition: transform 0.4s;
-}
+    .stat-card-enhanced::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color, #ec4899), var(--color-dark, #db2777));
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
 
-.stat-card-enhanced:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-  border-color: var(--color, #ec4899);
-}
+    .stat-card-enhanced:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      border-color: var(--color, #ec4899);
+    }
 
-.stat-card-enhanced:hover::before {
-  transform: scaleX(1);
-}
+    .stat-card-enhanced:hover::before {
+      transform: scaleX(1);
+    }
 
-.stat-value-enhanced {
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  margin: 12px 0;
-}
+    .stat-value-enhanced {
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--color, #ec4899), var(--color-dark, #db2777));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin: 12px 0;
+    }
 
-.stat-title-enhanced {
-  font-size: 0.875rem;
-  color: #64748b;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-}
+    .stat-title-enhanced {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
 
-.stat-desc-enhanced {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  margin-top: 8px;
-  line-height: 1.5;
-}
+    .stat-desc-enhanced {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
 
-/* Toast notification */
-.toast-notification {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  padding: 18px 28px;
-  border-radius: 16px;
-  box-shadow: 0 12px 35px rgba(16,185,129,0.5);
-  font-weight: 700;
-  font-size: 1rem;
-  z-index: 10000;
-  animation: slideInScale 0.5s ease-out forwards;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    /* Toast notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 18px 28px;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(16,185,129,0.5);
+      font-weight: 700;
+      font-size: 1rem;
+      z-index: 10000;
+      animation: slideInScale 0.5s ease-out forwards;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* Confetti */
-.confetti {
-  position: fixed;
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  animation: confettiFall 3s linear forwards;
-  pointer-events: none;
-  z-index: 9999;
-}
+    /* === ADDED FOR MOBILE MENU === */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .gauge-enhanced {
-    width: 200px;
-    height: 200px;
-  }
-
-  .score-number-enhanced {
-    font-size: 3rem;
-  }
-
-  .emoji-icon-enhanced {
-    font-size: 2.5rem;
-  }
-
-  .profile-title-enhanced {
-    font-size: 2rem;
-  }
-
-  .btn-enhanced {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .stats-grid-enhanced {
-    grid-template-columns: 1fr;
-  }
-}
+    .mobile-menu-open {
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    .mobile-touch-target { 
+       min-height: 44px; 
+       min-width: 44px; 
+    }
+    /* === END MOBILE MENU STYLES === */
 
 
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .gauge-enhanced {
+        width: 200px;
+        height: 200px;
+      }
+
+      .score-number-enhanced {
+        font-size: 3rem;
+      }
+
+      .emoji-icon-enhanced {
+        font-size: 2.5rem;
+      }
+
+      .profile-title-enhanced {
+        font-size: 2rem;
+      }
+
+      .btn-enhanced {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-grid-enhanced {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen antialiased">
 
-  <!-- Header remains static -->
-  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-sm shadow-md">
+  <header class="sticky top-0 z-40 glass-card shadow-md">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-      <div class="text-2xl font-extrabold text-gray-900">
+      <a href="index.html" class="text-2xl font-extrabold text-gray-900">
         Love<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-500">Meter</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a href="index.html" class="text-sm font-semibold text-gray-700 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Home</a>
+        <button id="nav-about" class="text-sm font-semibold text-gray-700 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">About</button>
       </div>
-      <div class="flex items-center gap-3">
-        <button id="nav-home" class="text-sm text-gray-700 hover:text-gray-900">Home</button>
-        <button id="nav-about" class="text-sm text-gray-700 hover:text-gray-900">About</button>
-      </div>
+      
+      <button data-action="toggle-mobile-menu" class="md:hidden p-2 rounded-lg hover:bg-gray-100 active:scale-95 transition-all">
+        <div class="w-6 h-5 flex flex-col justify-between" id="hamburger-icon">
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+        </div>
+      </button>
     </nav>
+    
+    <div id="mobile-menu" class="md:hidden hidden glass-card border-t border-gray-200/50 shadow-xl mobile-menu-open">
+      <div class="px-4 py-3 space-y-2">
+        <a href="index.html" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-all text-gray-700 hover:bg-pink-50 block">
+          🏠 Home
+        </a>
+        <button id="nav-about" class="w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-all text-gray-700 hover:bg-pink-50">
+          ℹ️ About
+        </button>
+      </div>
+    </div>
   </header>
 
   <main id="app" class="max-w-6xl mx-auto p-6 md:p-10"></main>
 
-  <!-- --- NEW PLEDGE MODAL --- -->
   <div id="pledge-modal" class="modal-overlay hidden">
     <div class="modal-content glass-card rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-4">💖</div>
@@ -566,17 +592,25 @@
       </button>
     </div>
   </div>
-  <!-- --- END PLEDGE MODAL --- -->
-
   <script type="module">
     // --- REFACTORED JAVASCRIPT ---
 
     // App state and router
-    const appState = { page: 'home', currentIndex: 0, answers: [], resultData: null, shareId: null };
+    const appState = { 
+      page: 'home', 
+      currentIndex: 0, 
+      answers: [], 
+      resultData: null, 
+      shareId: null,
+      mobileMenuOpen: false // <-- ADDED STATE
+    };
     const appRoot = document.getElementById('app');
+    const mobileMenu = document.getElementById('mobile-menu'); // <-- Get menu element
+    const hamburgerIcon = document.getElementById('hamburger-icon'); // <-- Get icon element
 
     function setPage(p) {
       appState.page = p;
+      appState.mobileMenuOpen = false; // <-- Close menu on any page change
       render();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
@@ -607,16 +641,12 @@
     }
 
     function handleAppClick(e) {
-    if (e.target.id === 'nav-home') {
-    // This line tells the browser to load the index.html page
-    window.location.href = 'index.html'; 
-    return;
-      }
-      if (e.target.id === 'nav-about') {
+      // Use querySelector for 'nav-about' to catch both mobile and desktop
+      if (e.target.closest('#nav-about')) {
         setPage('about');
         return;
       }
-
+      
       const target = e.target.closest('[data-action]');
       if (!target) return;
 
@@ -624,6 +654,10 @@
       const ds = target.dataset;
 
       switch (action) {
+        case 'toggle-mobile-menu': // <-- ADDED CASE
+          appState.mobileMenuOpen = !appState.mobileMenuOpen;
+          renderHeader(); // Only render the header/menu
+          break;
         case 'start-quiz':
           document.getElementById('pledge-modal').classList.remove('hidden');
           break;
@@ -885,7 +919,30 @@
     }
 
     // --- Render root ---
+    // This function updates the mobile menu's visibility and icon
+    function renderHeader() {
+      if (appState.mobileMenuOpen) {
+        mobileMenu.classList.remove('hidden');
+        hamburgerIcon.innerHTML = `
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300 rotate-45 translate-y-2"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300 opacity-0"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300 -rotate-45 -translate-y-2"></span>
+        `;
+      } else {
+        mobileMenu.classList.add('hidden');
+        hamburgerIcon.innerHTML = `
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+          <span class="w-full h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+        `;
+      }
+    }
+
     function render() {
+      // Always update the header/menu state
+      renderHeader();
+      
+      // Render the main page content
       if (appState.page === 'home') appRoot.innerHTML = renderHomePage();
       else if (appState.page === 'quiz') appRoot.innerHTML = renderQuizPage();
       else if (appState.page === 'loading') appRoot.innerHTML = renderLoadingPage();
@@ -971,7 +1028,7 @@
             <div class="grid gap-3">
               ${options.map(opt => {
                 const isSel = selected && selected.optionId === opt.id;
-                const base = "text-left px-4 py-3 rounded-xl border transition";
+                const base = "text-left px-4 py-3 rounded-xl border transition mobile-touch-target";
                 const cls = isSel ? "border-pink-400 bg-pink-50 text-pink-900" : "border-gray-200 bg-white text-gray-800 hover:border-pink-300 hover:bg-pink-50";
                 
                 return `
@@ -988,9 +1045,8 @@
             </div>
 
             <div class="mt-8 flex justify-between">
-              <button data-action="prev-question" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 ${qIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${qIndex === 0 ? 'disabled' : ''}>Back</button>
-              <!-- "Next" button is hidden because of auto-advance, but kept for non-JS or as a fallback if needed -->
-              <button data-action="next-question" id="nextBtn" class="px-5 py-2 rounded-xl bg-pink-600 text-white hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed ${!selected ? '' : 'hidden'}" ${selected ? "disabled" : ""}>
+              <button data-action="prev-question" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 mobile-touch-target ${qIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${qIndex === 0 ? 'disabled' : ''}>Back</button>
+              <button data-action="next-question" id="nextBtn" class="px-5 py-2 rounded-xl bg-pink-600 text-white hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed mobile-touch-target ${!selected ? '' : 'hidden'}" ${selected ? "disabled" : ""}>
                 ${qIndex === QUESTIONS.length - 1 ? "Finish" : "Next"}
               </button>
             </div>
@@ -1032,11 +1088,9 @@
 
       return `
         <div class="max-w-6xl mx-auto">
-          <!-- Main Result Card -->
           <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-12 result-card mb-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
 
-              <!-- Left: Enhanced Gauge Section -->
               <div class="flex flex-col items-center">
                 <div class="gauge-enhanced" 
                      style="--value:${result.score}; --color:${typeColor}; --color-dark:${typeColorDark}; --color-glow:${typeColorGlow};"
@@ -1054,7 +1108,6 @@
                 <div class="badge-enhanced mt-8" style="background:${typeColor};">${result.type}</div>
               </div>
 
-              <!-- Right: Profile Description -->
               <div class="profile-section-enhanced">
                 <h2 class="profile-title-enhanced">💖 Your Relationship Profile</h2>
                 <p class="text-gray-600 text-lg font-medium leading-relaxed">Congratulations on completing the assessment! Here's your personalized relationship analysis based on your responses.</p>
@@ -1063,7 +1116,6 @@
                   ${reportText}
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="mt-8 flex flex-wrap gap-3">
                   <button data-action="copy-share" data-share-id="${shareId}" class="btn-enhanced btn-gradient-enhanced">
                     <span>📤</span>
@@ -1077,16 +1129,13 @@
               </div>
             </div>
 
-            <!-- NEW: Strength and Growth Area -->
             <div class="mt-12 profile-section-enhanced" style="animation-delay: 600ms;">
                <div class="grid md:grid-cols-2 gap-6">
-                 <!-- Strength -->
                  <div class="bg-emerald-50 border-l-4 border-emerald-400 p-6 rounded-2xl shadow-lg">
                    <h3 class="text-xl font-bold text-emerald-800 mb-2">Key Strength</h3>
                    <p class="text-sm text-gray-600 mb-3">You showed strong positive behavior in this area:</p>
                    <p class="text-base font-semibold text-emerald-900">${result.strength.question}</p>
                  </div>
-                 <!-- Growth -->
                  <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-2xl shadow-lg">
                    <h3 class="text-xl font-bold text-amber-800 mb-2">Growth Area</h3>
                    <p class="text-sm text-gray-600 mb-3">This scenario challenged you the most:</p>
@@ -1096,7 +1145,6 @@
             </div>
 
 
-            <!-- ENHANCED: Real Stats Section -->
             <div class="stats-grid-enhanced">
               <div class="stat-card-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">
                 <div class="stat-title-enhanced">Bond Score</div>
@@ -1391,6 +1439,3 @@
   </script>
 </body>
 </html>
-
-
-
