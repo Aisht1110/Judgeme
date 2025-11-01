@@ -1,18 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#6366f1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <title>CharacterMeter • Character Judge</title>
-  
-  <!-- Tailwind CSS -->
+
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts -->
+
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  
-  <!-- All CSS is now back inside the <style> tag -->
+
   <style>
     body {
       font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
@@ -21,1397 +20,1354 @@
         radial-gradient(900px 500px at 90% 20%, rgba(34,211,238,0.12), transparent 60%),
         linear-gradient(135deg, #f3e8ff 0%, #e0f2fe 100%);
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
+
+    /* Scrollbar styling */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #a78bfa; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
 
-    @keyframes subtle-pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(109,40,217,.28);} 50%{ box-shadow:0 0 24px 8px rgba(109,40,217,.18);} }
-    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(18px) saturate(120%); -webkit-backdrop-filter: blur(18px) saturate(120%); border: 1px solid rgba(148,163,184,0.22); }
-    .cta {
-      position: relative; background-image: linear-gradient(92deg,#6366f1 0%,#22d3ee 100%); color:#fff;
-      box-shadow: 0 10px 20px rgba(99,102,241,.35), inset 0 1px 0 rgba(255,255,255,.25);
-      transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s, filter .2s; isolation:isolate;
-    }
-    .cta::before{content:""; position:absolute; inset:1px; border-radius:inherit; background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.22), transparent 55%); pointer-events:none; z-index:0;}
-    .cta::after{content:""; position:absolute; top:0; left:-140%; width:120%; height:100%; background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,.28) 50%, transparent 60%); transform: skewX(-12deg); transition:left 800ms ease; pointer-events:none; z-index:1;}
-    .cta:hover{ transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 30px rgba(99,102,241,.45), inset 0 1px 0 rgba(255,255,255,.28); filter:saturate(110%); }
-    .cta:hover::after{ left:140%; }
-    .cta:active{ transform: translateY(0) scale(.99); box-shadow: 0 8px 16px rgba(99,102,241,.30); }
-    .cta:focus-visible{ outline:none; box-shadow: 0 0 0 4px rgba(34,211,238,.35), 0 12px 24px rgba(99,102,241,.35); }
-
-    .metric{ transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease; }
-    .metric:hover{ transform: translateY(-3px); box-shadow:0 10px 22px rgba(15,23,42,.06); border-color: rgba(99,102,241,.25); }
-
-    .progress-sheen{ position:relative; overflow:hidden; }
-    .progress-sheen::after{ content:""; position:absolute; top:0; left:-40%; width:40%; height:100%; background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); animation: sheen 2.2s infinite ease; }
-    @keyframes sheen { 0%{ left:-40%; } 100%{ left:110%; } }
-
-    /* Result upgrades */
-    .result-card { background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75)); }
-    .gauge {
-      --size: 160px; --track: 10; --value: 0; --color: #6366f1;
-      width: var(--size); height: var(--size); border-radius: 50%;
-      background:
-        radial-gradient(farthest-side, white 79%, transparent 80% 100%),
-        conic-gradient(var(--color) calc(var(--value)*1%), #e5e7eb 0);
-      mask: radial-gradient(farthest-side, transparent calc(100% - var(--track)*1px - 1px), #000 calc(100% - var(--track)*1px));
-      position: relative; display:grid; place-items:center;
-    }
-    .gauge .gauge-content {
-      position:absolute; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-weight: 900;
-      color: #111827;
-    }
-    .stat { background: rgba(255,255,255,.8); border:1px solid rgba(148,163,184,.25); }
-    .badge { padding: 6px 10px; border-radius:9999px; color:white; font-weight:700; font-size:.85rem; }
-
-    /* --- NEW MODAL STYLES --- */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      opacity: 0;
-      animation: fadeIn 300ms ease forwards;
-    }
-    
-    .modal-content {
-      animation: slideIn 300ms ease 100ms forwards;
-      opacity: 0;
-      transform: translateY(20px);
+    /* Animations */
+    @keyframes subtle-pulse { 
+      0%,100%{ box-shadow:0 0 0 0 rgba(109,40,217,.28);} 
+      50%{ box-shadow:0 0 24px 8px rgba(109,40,217,.18);} 
     }
 
-    @keyframes fadeIn {
+    @keyframes gradient-x {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slide-in-right {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slide-in-left {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes scale-in {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
       to { opacity: 1; }
     }
 
-    @keyframes slideIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    /* --- END MODAL STYLES --- */
-
-    /* --- NEW STAT CARD & ANIMATION STYLES --- */
-    .stat-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      transition: transform 250ms ease, box-shadow 250ms ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-    }
-    .stat-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #475569; /* slate-600 */
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .stat-value {
-      font-size: 1.75rem; /* 2xl */
-      font-weight: 800; /* extrabold */
-      color: #1e293b; /* slate-800 */
-      line-height: 1;
-    }
-    .stat-desc {
-      font-size: 0.75rem;
-      color: #64748b; /* slate-500 */
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
 
-    /* Page load animations */
-    @keyframes resultPopIn {
-      0% { opacity: 0; transform: scale(0.9); }
-      100% { opacity: 1; transform: scale(1); }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-10px) rotate(2deg); }
+      66% { transform: translateY(-5px) rotate(-2deg); }
     }
-    @keyframes resultFadeUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+
+    @keyframes rotate-gradient {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
     }
-    .animate-pop-in { animation: resultPopIn 500ms ease forwards; }
-    .animate-fade-up { animation: resultFadeUp 500ms ease forwards; }
-    /* --- END STAT CARD & ANIMATION STYLES --- */
 
-  
-/* ========== ENHANCED RESULT PAGE STYLES ========== */
+    @keyframes swipe-hint {
+      0%, 100% { transform: translateX(0); opacity: 0.5; }
+      50% { transform: translateX(10px); opacity: 1; }
+    }
 
-/* Smooth entrance animations */
-@keyframes slideInScale {
-  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
+    @keyframes progress-pulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.8; transform: scaleY(0.95); }
+    }
 
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(25px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+    @keyframes bounce-in {
+      0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
 
-@keyframes bounceIn {
-  0% { opacity: 0; transform: scale(0.3); }
-  50% { opacity: 1; transform: scale(1.08); }
-  70% { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
 
-@keyframes floatBadge {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
+    /* Glass morphism effect */
+    .glass-card { 
+      background: rgba(255,255,255,0.85); 
+      backdrop-filter: blur(18px) saturate(120%); 
+      -webkit-backdrop-filter: blur(18px) saturate(120%); 
+      border: 1px solid rgba(148,163,184,0.22); 
+    }
 
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
+    .glass-card-dark { 
+      background: rgba(255,255,255,0.95); 
+      backdrop-filter: blur(20px) saturate(130%); 
+      -webkit-backdrop-filter: blur(20px) saturate(130%); 
+      border: 2px solid rgba(148,163,184,0.3); 
+    }
 
-@keyframes pulseGlow {
-  0%, 100% { 
-    box-shadow: 0 0 30px rgba(99,102,241,0.4),
-                0 0 60px rgba(99,102,241,0.2); 
-  }
-  50% { 
-    box-shadow: 0 0 50px rgba(99,102,241,0.6),
-                0 0 80px rgba(99,102,241,0.3); 
-  }
-}
+    /* Premium button styles */
+    .cta {
+      position: relative; 
+      background-image: linear-gradient(92deg,#6366f1 0%,#22d3ee 100%); 
+      color:#fff;
+      box-shadow: 0 10px 20px rgba(99,102,241,.35), inset 0 1px 0 rgba(255,255,255,.25);
+      transition: transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s, filter .2s; 
+      isolation:isolate;
+      overflow: hidden;
+    }
 
-@keyframes confettiFall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
+    .cta::before{
+      content:""; 
+      position:absolute; 
+      inset:1px; 
+      border-radius:inherit; 
+      background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.22), transparent 55%); 
+      pointer-events:none; 
+      z-index:0;
+    }
 
-/* Enhanced result card */
-.result-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92)) !important;
-  animation: slideInScale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
-}
+    .cta::after{
+      content:""; 
+      position:absolute; 
+      top:0; 
+      left:-150%; 
+      width:150%; 
+      height:100%; 
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 3s infinite;
+      z-index:1;
+    }
 
-/* Improved gauge with progress ring */
-.gauge-enhanced {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.9));
-  box-shadow: 
-    0 25px 50px rgba(0,0,0,0.12),
-    inset 0 -3px 15px rgba(0,0,0,0.05),
-    inset 0 3px 15px rgba(255,255,255,0.9);
-  animation: bounceIn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
+    .cta:hover { 
+      transform:translateY(-2px); 
+      box-shadow:0 14px 32px rgba(99,102,241,.42), inset 0 1px 0 rgba(255,255,255,.3); 
+    }
 
-.gauge-enhanced::before {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from -90deg,
-    var(--color, #6366f1) 0%,
-    var(--color, #6366f1) calc(var(--value, 0) * 3.6deg),
-    rgba(226,232,240,0.4) calc(var(--value, 0) * 3.6deg),
-    rgba(226,232,240,0.4) 360deg
-  );
-  mask: radial-gradient(closest-side, transparent 86%, white 87%);
-  -webkit-mask: radial-gradient(closest-side, transparent 86%, white 87%);
-  animation: pulseGlow 3s ease-in-out infinite;
-}
+    .cta:active { 
+      transform:translateY(0) scale(0.98); 
+      box-shadow:0 6px 12px rgba(99,102,241,.3); 
+    }
 
-.gauge-enhanced::after {
-  content: '';
-  position: absolute;
-  inset: -22px;
-  border-radius: 50%;
-  background: inherit;
-  filter: blur(20px);
-  opacity: 0.3;
-  z-index: -1;
-}
+    /* Animation classes */
+    .animate-gradient { 
+      background-size: 200% auto; 
+      animation: gradient-x 3s ease infinite; 
+    }
 
-.gauge-content-enhanced {
-  text-align: center;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+    .animate-bounce-slow { animation: bounce-slow 2s infinite ease-in-out; }
+    .animate-slide-up { animation: slide-up 0.6s ease-out; }
+    .animate-slide-in-right { animation: slide-in-right 0.5s ease-out; }
+    .animate-slide-in-left { animation: slide-in-left 0.5s ease-out; }
+    .animate-scale-in { animation: scale-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .animate-fade-in { animation: fade-in 0.8s ease-out; }
+    .animate-confetti { animation: confetti-fall linear forwards; }
+    .animate-float { animation: float 4s ease-in-out infinite; }
+    .animate-bounce-in { animation: bounce-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .swipe-hint { animation: swipe-hint 2s ease-in-out infinite; }
+    .progress-pulse { animation: progress-pulse 1.5s ease-in-out infinite; }
 
-.score-number-enhanced {
-  font-size: 4rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--color, #6366f1), var(--color-dark, #4f46e5));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -3px;
-  line-height: 1;
-  text-shadow: 0 2px 10px rgba(99,102,241,0.2);
-}
+    /* Result circle with rotating gradient */
+    .result-circle {
+      position: relative;
+    }
 
-.emoji-icon-enhanced {
-  font-size: 3.5rem;
-  animation: bounceIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s forwards;
-  opacity: 0;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-}
+    .result-circle::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #6366f1, #22d3ee, #ec4899, #f59e0b, #6366f1);
+      background-size: 300% 300%;
+      z-index: -1;
+      animation: rotate-gradient 4s linear infinite;
+      opacity: 0.6;
+      filter: blur(10px);
+    }
 
-.score-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .mobile-touch-target { 
+        min-height: 44px; 
+        min-width: 44px; 
+        touch-action: manipulation;
+      }
+      .mobile-card-spacing { gap: 12px; }
 
-/* Enhanced badge with shimmer */
-.badge-enhanced {
-  padding: 14px 32px;
-  border-radius: 50px;
-  color: white;
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  box-shadow: 
-    0 12px 30px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.35),
-    inset 0 -1px 0 rgba(0,0,0,0.2);
-  animation: floatBadge 3.5s ease-in-out infinite;
-  position: relative;
-  overflow: hidden;
-}
+      /* Prevent text selection on mobile */
+      * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+      }
 
-.badge-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: shimmer 3s infinite;
-}
+      /* Smooth scrolling for mobile */
+      html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
 
-/* Profile section improvements */
-.profile-section-enhanced {
-  animation: fadeInUp 0.7s ease-out 0.4s forwards;
-  opacity: 0;
-}
+    /* Loading spinner */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-.profile-title-enhanced {
-  font-size: 2.75rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #1e293b, #475569);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1.25rem;
-  line-height: 1.1;
-}
+    .animate-spin { animation: spin 1s linear infinite; }
 
-.profile-description-enhanced {
-  font-size: 1.125rem;
-  line-height: 1.9;
-  color: #334155;
-  margin-top: 1.5rem;
-  padding: 1.75rem;
-  background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(241,245,249,0.8));
-  border-radius: 18px;
-  border-left: 5px solid var(--color, #6366f1);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-  backdrop-filter: blur(10px);
-}
+    /* Pulse animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
 
-/* Button styles */
-.btn-enhanced {
-  padding: 15px 30px;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  cursor: pointer;
-}
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-.btn-enhanced:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+    /* Score number animation */
+    .score-digit {
+      display: inline-block;
+      animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    }
 
-.btn-enhanced:active {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
+    .score-digit:nth-child(1) { animation-delay: 0.1s; }
+    .score-digit:nth-child(2) { animation-delay: 0.2s; }
+    .score-digit:nth-child(3) { animation-delay: 0.3s; }
 
-.btn-gradient-enhanced {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white;
-}
+    /* Option selection effect */
+    .option-selected {
+      animation: bounce-in 0.3s ease-out;
+    }
 
-.btn-gradient-enhanced::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
+    /* Mobile menu animations */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.btn-gradient-enhanced:hover::before {
-  opacity: 1;
-}
+    .mobile-menu-open {
+      animation: slideDown 0.3s ease-out;
+    }
 
-.btn-gradient-enhanced span {
-  position: relative;
-  z-index: 1;
-}
+    /* Hover glow effect */
+    .glow-on-hover {
+      transition: all 0.3s ease;
+    }
 
-.btn-outline-enhanced {
-  background: white;
-  color: #475569;
-  border: 2.5px solid #e2e8f0;
-}
+    .glow-on-hover:hover {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.6), 
+                  0 0 40px rgba(99, 102, 241, 0.4),
+                  0 0 60px rgba(99, 102, 241, 0.2);
+    }
 
-.btn-outline-enhanced:hover {
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-color: #cbd5e1;
-}
+    /* Character type badge animation */
+    .character-badge {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-.btn-success-enhanced {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-}
+    .character-badge:hover {
+      transform: translateY(-5px) scale(1.05);
+    }
 
-.btn-success-enhanced:hover {
-  background: linear-gradient(135deg, #059669, #047857);
-}
-
-/* Stats cards improvement */
-.stats-grid-enhanced {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  margin-top: 3.5rem;
-  animation: fadeInUp 0.7s ease-out 0.8s forwards;
-  opacity: 0;
-}
-
-.stat-card-enhanced {
-  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(249,250,251,0.9));
-  padding: 28px;
-  border-radius: 24px;
-  text-align: center;
-  border: 2px solid rgba(148,163,184,0.15);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-card-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color, #6366f1), var(--color-dark, #4f46e5));
-  transform: scaleX(0);
-  transition: transform 0.4s;
-}
-
-.stat-card-enhanced:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-  border-color: var(--color, #6366f1);
-}
-
-.stat-card-enhanced:hover::before {
-  transform: scaleX(1);
-}
-
-.stat-value-enhanced {
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--color, #6366f1), var(--color-dark, #4f46e5));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  margin: 12px 0;
-}
-
-.stat-title-enhanced {
-  font-size: 0.875rem;
-  color: #64748b;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-}
-
-.stat-desc-enhanced {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  margin-top: 8px;
-  line-height: 1.5;
-}
-
-/* Toast notification */
-.toast-notification {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  padding: 18px 28px;
-  border-radius: 16px;
-  box-shadow: 0 12px 35px rgba(16,185,129,0.5);
-  font-weight: 700;
-  font-size: 1rem;
-  z-index: 10000;
-  animation: slideInScale 0.5s ease-out forwards;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Confetti */
-.confetti {
-  position: fixed;
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  animation: confettiFall 3s linear forwards;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .gauge-enhanced {
-    width: 200px;
-    height: 200px;
-  }
-
-  .score-number-enhanced {
-    font-size: 3rem;
-  }
-
-  .emoji-icon-enhanced {
-    font-size: 2.5rem;
-  }
-
-  .profile-title-enhanced {
-    font-size: 2rem;
-  }
-
-  .btn-enhanced {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .stats-grid-enhanced {
-    grid-template-columns: 1fr;
-  }
-}
-
-
+    /* Progress bar glow */
+    .progress-bar-glow {
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5),
+                  0 0 20px rgba(99, 102, 241, 0.3),
+                  0 0 30px rgba(99, 102, 241, 0.1);
+    }
   </style>
 </head>
-<!-- Removed onload="initApp()" from body -->
-<body class="min-h-screen antialiased">
+<body>
 
-  <!-- Header remains static -->
-  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-sm shadow-md">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-      <div class="text-2xl font-extrabold text-gray-900">
-        Character<span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">Meter</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <!-- Added IDs for static event listeners, removed onclick -->
-        <button id="nav-home" class="text-sm text-gray-700 hover:text-gray-900">Home</button>
-        <button id="nav-about" class="text-sm text-gray-700 hover:text-gray-900">About</button>
-      </div>
-    </nav>
-  </header>
+  <div id="app"></div>
 
-  <!-- Replaced <div> with <main> for semantics -->
-  <main id="app" class="max-w-6xl mx-auto p-6 md:p-10"></main>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- --- NEW PLEDGE MODAL --- -->
-  <div id="pledge-modal" class="modal-overlay hidden">
-    <div class="modal-content glass-card rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full text-center">
-      <div class="text-6xl mb-4">🤝</div>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">A Quick Pledge</h2>
-      <p class="text-lg text-slate-700 mb-8">
-        "I will be true to myself."
-      </p>
-      <button type="button" data-action="accept-pledge" class="cta inline-flex items-center justify-center px-10 py-3 rounded-full font-extrabold text-lg tracking-wide uppercase cursor-pointer select-none">
-        <span class="relative z-10">I Agree</span>
-      </button>
-    </div>
-  </div>
-  <!-- --- END PLEDGE MODAL --- -->
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo, useRef } = React;
 
-  <!-- All JavaScript is now inside this <script> tag -->
-  <!-- Using type="module" to keep scope clean and allow top-level functions -->
-  <script type="module">
-    // --- REFACTORED JAVASCRIPT ---
+    // ============= CONFIGURATION CONSTANTS =============
+    const CHARACTER_TYPES = [
+      { 
+        range: [90, 100], 
+        name: "Pure Soul", 
+        color: "from-green-400 to-emerald-600", 
+        textColor: "text-green-600",
+        badge: "bg-green-100", 
+        borderColor: "border-green-400",
+        emoji: "✨",
+        icon: "❤️",
+        description: "Your moral compass is unwavering. You embody virtue, empathy, and idealism. You see the best in people and situations.",
+        traits: ["Empathetic", "Honest", "Compassionate", "Selfless"]
+      },
+      { 
+        range: [70, 89], 
+        name: "Realist", 
+        color: "from-blue-400 to-cyan-600", 
+        textColor: "text-blue-600",
+        badge: "bg-blue-100", 
+        borderColor: "border-blue-400",
+        emoji: "🎯",
+        icon: "⚡",
+        description: "You balance ethics with pragmatism, navigating life with wisdom and practicality. You understand nuance.",
+        traits: ["Practical", "Balanced", "Wise", "Fair-minded"]
+      },
+      { 
+        range: [50, 69], 
+        name: "Balanced", 
+        color: "from-purple-400 to-pink-600", 
+        textColor: "text-purple-600",
+        badge: "bg-purple-100", 
+        borderColor: "border-purple-400",
+        emoji: "⚖️",
+        icon: "🎭",
+        description: "Your complexity is your strength. You see all perspectives and adapt accordingly. You're neither purely idealistic nor cynical.",
+        traits: ["Adaptable", "Complex", "Thoughtful", "Diplomatic"]
+      },
+      { 
+        range: [30, 49], 
+        name: "Shadow Thinker", 
+        color: "from-yellow-400 to-orange-600", 
+        textColor: "text-yellow-600",
+        badge: "bg-yellow-100", 
+        borderColor: "border-yellow-400",
+        emoji: "🤔",
+        icon: "🌓",
+        description: "Skeptical and introspective, you value self-preservation and questioning the status quo. You see beyond surface appearances.",
+        traits: ["Analytical", "Skeptical", "Independent", "Cautious"]
+      },
+      { 
+        range: [0, 29], 
+        name: "Rebel Mind", 
+        color: "from-red-400 to-rose-600", 
+        textColor: "text-red-600",
+        badge: "bg-red-100", 
+        borderColor: "border-red-400",
+        emoji: "🔥",
+        icon: "⚔️",
+        description: "You challenge norms and prioritize individual freedom above all. You're unafraid to go against the grain.",
+        traits: ["Bold", "Unconventional", "Freedom-seeking", "Rebellious"]
+      },
+    ];
 
-    // App state and router
-    const appState = { page: 'home', currentIndex: 0, answers: [], resultData: null, shareId: null };
-    const appRoot = document.getElementById('app');
-
-    /**
-     * Sets the current page, renders it, and manages focus for accessibility.
-     * @param {string} p - The page name to navigate to.
-     */
-    function setPage(p) {
-      appState.page = p;
-      render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Manage focus for accessibility
-      // Move focus to the new page's main heading
-      setTimeout(() => {
-        const firstHeading = appRoot.querySelector('h1, h2');
-        if (firstHeading) {
-          if (!firstHeading.hasAttribute('tabindex')) {
-            firstHeading.setAttribute('tabindex', '-1'); // Make it programmatically focusable
-          }
-          firstHeading.focus(); // Move screen reader and keyboard focus
-        }
-      }, 100); // Small delay to ensure render is complete
-    }
-
-    /**
-     * Initializes the application, attaches event listeners, and renders the initial page.
-     */
-    function initApp() {
-      // Attach main listener for all dynamic content using event delegation
-      document.addEventListener('click', handleAppClick); // Listen on the whole document
-
-      // Per-user seed for randomized answers
-      window.USER_SEED = getOrCreateUserSeed();
-
-      // Check for shared results in URL
-      const params = new URLSearchParams(location.search);
-      const share = params.get('share');
-      if (share) {
-        const saved = JSON.parse(localStorage.getItem('cm:' + share) || 'null');
-        if (saved) {
-          appState.resultData = saved;
-          appState.shareId = share;
-          appState.page = 'result';
-        }
-      }
-      render();
-    }
-
-    /**
-     * Handles all clicks within the #app container using event delegation.
-     * @param {Event} e - The click event.
-     */
-    function handleAppClick(e) {
-  // Handle static nav clicks
-  if (e.target.id === 'nav-home') {
-    // This line tells the browser to load the index.html page
-    window.location.href = 'index.html'; 
-    return;
-  }
-      if (e.target.id === 'nav-about') {
-        setPage('about');
-        return;
-      }
-
-      // Find the closest interactive element with a data-action
-      const target = e.target.closest('[data-action]');
-      if (!target) return; // Clicked on non-interactive content
-
-      const action = target.dataset.action;
-      const ds = target.dataset; // All data attributes
-
-      // Route actions to the correct functions
-      switch (action) {
-        case 'start-quiz':
-          document.getElementById('pledge-modal').classList.remove('hidden');
-          break;
-        case 'accept-pledge': // NEW CASE
-          document.getElementById('pledge-modal').classList.add('hidden');
-          setPage('quiz');
-          break;
-        case 'select-option':
-          selectOption(parseInt(ds.questionId, 10), ds.optionId, parseFloat(ds.weight));
-          break;
-        case 'prev-question':
-          prevQuestion();
-          break;
-        case 'next-question':
-          if (!target.disabled) nextQuestion(); // Check if button is disabled
-          break;
-        case 'copy-share':
-          copyShare(ds.shareId, target); // Pass the button for UI feedback
-          break;
-        case 'retest':
-          retest();
-          break;
-        case 'premium-ai':
-          handlePremiumAI();
-          break;
-      }
-    }
-
-    // --- Seeded randomization helpers (stable per user) ---
-    function getOrCreateUserSeed() {
-      const key = 'cm:user-seed';
-      let seed = localStorage.getItem(key);
-      if (!seed) {
-        seed = Math.random().toString(36).slice(2, 10);
-        localStorage.setItem(key, seed);
-      }
-      return seed;
-    }
-    function mulberry32(a) { return function () { let t = a += 0x6D2B79F5; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; } }
-    function strHash(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
-    function seededShuffle(arr, seedStr) {
-      const rnd = mulberry32(strHash(seedStr));
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(rnd() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    // --- Full 20-question bank ---
-    const QUESTIONS = [
-      { id: 1, text: "How would you handle telling a friend a harsh truth...?",
+    const QUIZ_DATA = [
+      {
+        id: 1,
+        question: "How would you handle telling a friend a harsh truth that might hurt their feelings?",
         options: [
-          { id: "a", label: "Yes, immediately and directly, regardless of feelings.", weight: 10 },
-          { id: "b", label: "Yes, but I would deliver the truth as gently as possible.", weight: 5 },
-          { id: "c", label: "Only if they explicitly asked for my honest opinion.", weight: 0 },
-          { id: "d", label: "No, I value their immediate happiness and peace of mind over the truth.", weight: -5 },
-          { id: "e", label: "No, it's not my place to interfere with their choices.", weight: -10 }
+          { text: "Tell them immediately and directly, regardless of their feelings", weight: 10 },
+          { text: "Deliver the truth as gently and tactfully as possible", weight: 5 },
+          { text: "Only share if they explicitly asked for my honest opinion", weight: 0 },
+          { text: "I would value their immediate happiness over the harsh truth", weight: -5 },
+          { text: "It's not my place to interfere with their choices or feelings", weight: -10 }
         ]
       },
-      { id: 2, text: "Regarding deep wrongs, how easy is it for you to offer genuine forgiveness?",
+      {
+        id: 2,
+        question: "Regarding deep wrongs done to you, how easy is it for you to offer genuine forgiveness?",
         options: [
-          { id: "a", label: "I forgive easily and fully, seeing it as self-liberation.", weight: 10 },
-          { id: "b", label: "I forgive, but it requires significant time and reflection.", weight: 5 },
-          { id: "c", label: "I may try to forgive, but I rarely forget the action.", weight: 0 },
-          { id: "d", label: "I rarely forgive, as it feels like an erosion of self-respect.", weight: -5 },
-          { id: "e", label: "I believe in 'never forget, never forgive' as a defense mechanism.", weight: -10 }
+          { text: "I forgive easily and fully, seeing it as self-liberation", weight: 10 },
+          { text: "I can forgive, but it requires significant time and reflection", weight: 5 },
+          { text: "I may try to forgive, but I rarely forget the wrongdoing", weight: 0 },
+          { text: "I rarely forgive, as it feels like an erosion of self-respect", weight: -5 },
+          { text: "I believe in 'never forget, never forgive' as a defense mechanism", weight: -10 }
         ]
       },
-      { id: 3, text: "If you found a wallet containing $1000 and the owner's ID...?",
+      {
+        id: 3,
+        question: "If you found a wallet containing $1000 and the owner's ID...",
         options: [
-          { id: "a", label: "Return the entire amount immediately without question or expectation.", weight: 10 },
-          { id: "b", label: "Return it, hoping for a small reward, but expecting nothing.", weight: 5 },
-          { id: "c", label: "I would hesitate, but ultimately return the wallet and contents.", weight: 0 },
-          { id: "d", label: "I'd take a small 'finder's fee' and return the rest anonymously.", weight: -5 },
-          { id: "e", label: "I would keep the money and dispose of the identification.", weight: -10 }
+          { text: "Return the entire amount immediately without question or expectation", weight: 10 },
+          { text: "Return it, hoping for a small reward but expecting nothing", weight: 5 },
+          { text: "I would hesitate, but ultimately return the wallet and contents", weight: 0 },
+          { text: "I'd take a small 'finder's fee' for my inconvenience and return the rest", weight: -5 },
+          { text: "I would keep the money and dispose of the identification", weight: -10 }
         ]
       },
-      { id: 4, text: "In achieving a great goal, do you believe the ends always justify the means?",
+      {
+        id: 4,
+        question: "In achieving a great goal, do you believe the ends always justify the means?",
         options: [
-          { id: "a", label: "No, the process and ethics matter most; the means define the goal.", weight: 10 },
-          { id: "b", label: "The means are usually more important than the final result.", weight: 5 },
-          { id: "c", label: "It depends entirely on the magnitude of the goal and the cost of the means.", weight: 0 },
-          { id: "d", label: "The ends justify the means if the result is a significant societal benefit.", weight: -5 },
-          { id: "e", label: "Yes, results are everything; ethics are irrelevant in high-stakes achievement.", weight: -10 }
+          { text: "No, the process and ethics matter most; the means define the goal", weight: 10 },
+          { text: "The means are usually more important than the final result", weight: 5 },
+          { text: "It depends entirely on the magnitude of the goal and cost of the means", weight: 0 },
+          { text: "The ends justify the means if the result significantly benefits society", weight: -5 },
+          { text: "Yes, results are everything; ethics are irrelevant in high-stakes situations", weight: -10 }
         ]
       },
-      { id: 5, text: "Which element primarily drives your major life decisions?",
+      {
+        id: 5,
+        question: "Which element primarily drives your major life decisions?",
         options: [
-          { id: "a", label: "Deep emotional connection and empathy for those affected.", weight: 10 },
-          { id: "b", label: "Mostly emotional conviction, but informed by pragmatic logic.", weight: 5 },
-          { id: "c", label: "A conscious effort to balance logic and emotion.", weight: 0 },
-          { id: "d", label: "Mostly logical necessity, tempered by occasional emotional concerns.", weight: -5 },
-          { id: "e", label: "Purely rational, detached logical necessity and calculation.", weight: -10 }
+          { text: "Deep emotional connection and empathy for those affected", weight: 10 },
+          { text: "Mostly emotional conviction, but informed by pragmatic logic", weight: 5 },
+          { text: "A conscious effort to achieve perfect balance of logic and emotion", weight: 0 },
+          { text: "Mostly logical necessity, tempered by occasional emotional concerns", weight: -5 },
+          { text: "Purely rational, detached logical necessity and calculation", weight: -10 }
         ]
       },
-      { id: 6, text: "How do you react to rules, laws, or guidelines you deem pointless or unjust?",
+      {
+        id: 6,
+        question: "How do you react to rules, laws, or guidelines you deem pointless or unjust?",
         options: [
-          { id: "a", label: "I follow them while actively and ethically working to change them.", weight: 10 },
-          { id: "b", label: "I follow them reluctantly, but respect the system's stability.", weight: 5 },
-          { id: "c", label: "I discreetly ignore them if risk of harm/exposure is negligible.", weight: 0 },
-          { id: "d", label: "I actively challenge and break unjust rules to make a statement.", weight: -5 },
-          { id: "e", label: "I break any rule I fundamentally disagree with, regardless of consequence.", weight: -10 }
+          { text: "I follow them while actively and ethically working to change them", weight: 10 },
+          { text: "I follow them reluctantly, but respect the system's stability", weight: 5 },
+          { text: "I discreetly ignore them if the risk of harm or exposure is negligible", weight: 0 },
+          { text: "I actively challenge and break unjust rules to make a statement", weight: -5 },
+          { text: "I break any rule I fundamentally disagree with, regardless of consequence", weight: -10 }
         ]
       },
-      { id: 7, text: "Do you enjoy analyzing other people's underlying motives and flaws?",
+      {
+        id: 7,
+        question: "Do you enjoy analyzing other people's underlying motives and flaws?",
         options: [
-          { id: "a", label: "No, I instinctively choose to focus on positive intentions.", weight: 10 },
-          { id: "b", label: "I observe motives only when necessary, avoiding unnecessary judgment.", weight: 5 },
-          { id: "c", label: "I analyze others only if I feel personally threatened or misled.", weight: 0 },
-          { id: "d", label: "I enjoy dissecting flaws and motives; it helps me understand human nature.", weight: -5 },
-          { id: "e", label: "It is my primary way of dealing with people, assuming ulterior motives first.", weight: -10 }
+          { text: "No, I instinctively choose to focus on positive intentions", weight: 10 },
+          { text: "I observe motives only when necessary, avoiding unnecessary judgment", weight: 5 },
+          { text: "I analyze others only if I feel personally threatened or misled", weight: 0 },
+          { text: "I enjoy dissecting flaws and motives; it helps me understand human nature", weight: -5 },
+          { text: "It's my primary way of dealing with people, assuming ulterior motives first", weight: -10 }
         ]
       },
-      { id: 8, text: "When facing a difficult decision, what do you prioritize?",
+      {
+        id: 8,
+        question: "When facing a difficult decision, what do you prioritize?",
         options: [
-          { id: "a", label: "The collective good of the largest group, even if it means personal sacrifice.", weight: 10 },
-          { id: "b", label: "The collective good, provided my immediate safety and needs are met.", weight: 5 },
-          { id: "c", label: "An equal and healthy balance between my needs and others'.", weight: 0 },
-          { id: "d", label: "My own immediate happiness, then the collective good.", weight: -5 },
-          { id: "e", label: "My own happiness and advancement, first and foremost.", weight: -10 }
+          { text: "The collective good of the largest group, even if it means personal sacrifice", weight: 10 },
+          { text: "The collective good, provided my immediate safety and needs are met", weight: 5 },
+          { text: "I strive for an equal and healthy balance between my needs and others'", weight: 0 },
+          { text: "My own immediate happiness, followed by consideration for collective good", weight: -5 },
+          { text: "My own happiness and advancement, first and foremost", weight: -10 }
         ]
       },
-      { id: 9, text: "How do you genuinely feel when a peer or colleague achieves a major success?",
+      {
+        id: 9,
+        question: "How do you genuinely feel when a peer or colleague achieves major success?",
         options: [
-          { id: "a", label: "Genuine excitement, inspiration, and happiness for their accomplishment.", weight: 10 },
-          { id: "b", label: "Happy for them, with a small spark of competitive desire.", weight: 5 },
-          { id: "c", label: "Mostly indifferent, focusing on my own work.", weight: 0 },
-          { id: "d", label: "Annoyance and a desire to surpass them quickly.", weight: -5 },
-          { id: "e", label: "Pure jealousy, annoyance, and resentment.", weight: -10 }
+          { text: "Genuine excitement, inspiration, and happiness for their accomplishment", weight: 10 },
+          { text: "Happy for them, but a small spark of competitive desire ignites within me", weight: 5 },
+          { text: "Mostly indifferent, focusing on my own work and achievements", weight: 0 },
+          { text: "A mix of annoyance and competitive desire to surpass them quickly", weight: -5 },
+          { text: "Pure jealousy, annoyance, and resentment", weight: -10 }
         ]
       },
-      { id: 10, text: "How often do you reflect on your past mistakes and regrets?",
+      {
+        id: 10,
+        question: "How often do you reflect on your past mistakes and regrets?",
         options: [
-          { id: "a", label: "Regularly; a vital tool for continuous learning.", weight: 10 },
-          { id: "b", label: "I note the lesson quickly and move on, avoiding dwelling.", weight: 5 },
-          { id: "c", label: "Only when a similar situation arises or others bring them up.", weight: 0 },
-          { id: "d", label: "I prefer not to look backward; it's a waste of energy.", weight: -5 },
-          { id: "e", label: "I deny or minimize mistakes and shift blame.", weight: -10 }
+          { text: "Regularly, as a vital tool for continuous learning and growth", weight: 10 },
+          { text: "I note the lesson quickly and generally move on, avoiding dwelling", weight: 5 },
+          { text: "Only when a similar situation arises or when others bring them up", weight: 0 },
+          { text: "I strongly prefer not to look backward; it's a waste of energy", weight: -5 },
+          { text: "I actively deny or minimize my past mistakes and shift the blame", weight: -10 }
         ]
       },
-      { id: 11, text: "How comfortable are you dealing with moral ambiguity and 'gray' areas?",
+      {
+        id: 11,
+        question: "How comfortable are you dealing with moral ambiguity and 'gray' areas?",
         options: [
-          { id: "a", label: "I strongly prefer clear lines of good and bad, avoiding ambiguity.", weight: 10 },
-          { id: "b", label: "I prefer clarity but accept complexity is sometimes unavoidable.", weight: 5 },
-          { id: "c", label: "I am comfortable with moral ambiguity and take things case-by-case.", weight: 0 },
-          { id: "d", label: "I thrive in moral ambiguity; clear lines feel restrictive.", weight: -5 },
-          { id: "e", label: "Everything is morally relative; clear lines don't exist.", weight: -10 }
+          { text: "I strongly prefer clear lines of good and bad, avoiding ambiguity", weight: 10 },
+          { text: "I prefer clarity but accept that complexity is sometimes unavoidable", weight: 5 },
+          { text: "I am comfortable with moral ambiguity and take things case-by-case", weight: 0 },
+          { text: "I thrive in moral ambiguity; clear lines feel too restrictive", weight: -5 },
+          { text: "I believe everything is morally relative, so clear lines don't exist", weight: -10 }
         ]
       },
-      { id: 12, text: "What is your core belief about human nature?",
+      {
+        id: 12,
+        question: "What is your core belief about human nature?",
         options: [
-          { id: "a", label: "People are inherently good and decent.", weight: 10 },
-          { id: "b", label: "People are generally good, but deeply flawed.", weight: 5 },
-          { id: "c", label: "People are a blank slate, entirely defined by environment.", weight: 0 },
-          { id: "d", label: "People are inherently self-interested and opportunistic.", weight: -5 },
-          { id: "e", label: "People are fundamentally selfish; goodness is a mask.", weight: -10 }
+          { text: "People are inherently good and decent at their core", weight: 10 },
+          { text: "People are generally good, but deeply flawed", weight: 5 },
+          { text: "People are a blank slate, entirely defined by their environment", weight: 0 },
+          { text: "People are inherently self-interested and opportunistic", weight: -5 },
+          { text: "People are fundamentally selfish, and goodness is often just a mask", weight: -10 }
         ]
       },
-      { id: 13, text: "If you could gain great personal power by sacrificing the minor well-being of a stranger, would you?",
+      {
+        id: 13,
+        question: "If you could gain great personal power by sacrificing the minor well-being of a stranger, would you?",
         options: [
-          { id: "a", label: "No, never, under any circumstances.", weight: 10 },
-          { id: "b", label: "Only if the sacrifice was absolutely trivial.", weight: 5 },
-          { id: "c", label: "Only if the power directly benefited all of humanity.", weight: 0 },
-          { id: "d", label: "Yes, if my gain outweighs the stranger's small loss.", weight: -5 },
-          { id: "e", label: "Yes, personal gain and power are worth the small cost.", weight: -10 }
+          { text: "No, never, under any circumstances", weight: 10 },
+          { text: "I would only consider it if the sacrifice was absolutely trivial", weight: 5 },
+          { text: "Only if the resulting power directly benefited all of humanity", weight: 0 },
+          { text: "Yes, if the gain for me significantly outweighed the stranger's small loss", weight: -5 },
+          { text: "Yes, personal gain and power are worth the small cost to a stranger", weight: -10 }
         ]
       },
-      { id: 14, text: "How important is maintaining appearances (status, wealth, perfection) to you?",
+      {
+        id: 14,
+        question: "How important is maintaining appearances (status, wealth, perfection) to you?",
         options: [
-          { id: "a", label: "Not important at all; authenticity is everything.", weight: 10 },
-          { id: "b", label: "Important only for credibility/respect.", weight: 5 },
-          { id: "c", label: "Moderately important; I like to present myself well.", weight: 0 },
-          { id: "d", label: "Very important for success and advantage.", weight: -5 },
-          { id: "e", label: "Extremely important; image is everything.", weight: -10 }
+          { text: "Not important at all; authenticity is everything to me", weight: 10 },
+          { text: "Important only for professional credibility or basic respect", weight: 5 },
+          { text: "Moderately important; I like to present myself well", weight: 0 },
+          { text: "Very important for success, status, and competitive advantage", weight: -5 },
+          { text: "Extremely important; image is everything, regardless of reality", weight: -10 }
         ]
       },
-      { id: 15, text: "Do you actively seek opportunities to help others, even when it is inconvenient?",
+      {
+        id: 15,
+        question: "Do you actively seek opportunities to help others, even when it's inconvenient?",
         options: [
-          { id: "a", label: "Yes, I regularly look for ways to contribute at a cost to myself.", weight: 10 },
-          { id: "b", label: "I help when asked, if inconvenience is minimal.", weight: 5 },
-          { id: "c", label: "I limit help to close friends and family.", weight: 0 },
-          { id: "d", label: "I avoid inconvenience; my resources are precious.", weight: -5 },
-          { id: "e", label: "No; my primary focus is entirely myself.", weight: -10 }
+          { text: "Yes, I regularly look for ways to contribute, even at cost to myself", weight: 10 },
+          { text: "I help when asked directly, provided the inconvenience is minimal", weight: 5 },
+          { text: "I limit my help primarily to close friends and family", weight: 0 },
+          { text: "I avoid inconvenience; my time and resources are too precious", weight: -5 },
+          { text: "No, my primary focus and obligation are entirely to myself", weight: -10 }
         ]
       },
-      { id: 16, text: "If a mistake at work harms the company but benefits you...?",
+      {
+        id: 16,
+        question: "If a mistake at work significantly harms the company but inadvertently benefits you...",
         options: [
-          { id: "a", label: "Take full, public responsibility and fix the harm, even at personal cost.", weight: 10 },
-          { id: "b", label: "Take responsibility, but highlight the unintentional positive outcome.", weight: 5 },
-          { id: "c", label: "Allow others to share the blame to protect my career.", weight: 0 },
-          { id: "d", label: "Deny knowledge and let the company sort it out.", weight: -5 },
-          { id: "e", label: "Deflect blame onto an innocent coworker.", weight: -10 }
+          { text: "Take full, public responsibility and work to fix the harm, even at personal cost", weight: 10 },
+          { text: "Take responsibility, but highlight the unintentional positive outcome", weight: 5 },
+          { text: "I would subtly allow others to share the blame to protect my career", weight: 0 },
+          { text: "I would deny any knowledge and let the company sort out the damage", weight: -5 },
+          { text: "I would actively deflect all blame onto an innocent coworker", weight: -10 }
         ]
       },
-      { id: 17, text: "Would you lie under oath (perjury) to save a close family member...?",
+      {
+        id: 17,
+        question: "Would you lie under oath (perjury) to save a close family member from serious legal consequences?",
         options: [
-          { id: "a", label: "No; upholding justice and law is paramount.", weight: 10 },
-          { id: "b", label: "Agonizing, but ultimately choose truth and justice.", weight: 5 },
-          { id: "c", label: "Refuse to testify or find a legal loophole instead.", weight: 0 },
-          { id: "d", label: "Lie only if punishment seems disproportionately harsh.", weight: -5 },
-          { id: "e", label: "Yes; familial loyalty transcends law and abstract justice.", weight: -10 }
+          { text: "No, upholding justice and the law is paramount, regardless of personal cost", weight: 10 },
+          { text: "It would be agonizing, but I would ultimately choose truth and justice", weight: 5 },
+          { text: "I would refuse to testify or find a legal loophole to avoid lying", weight: 0 },
+          { text: "I would lie only if the punishment seemed disproportionately harsh", weight: -5 },
+          { text: "Yes, familial loyalty transcends all law and abstract justice", weight: -10 }
         ]
       },
-      { id: 18, text: "Do you support comprehensive, real-time government surveillance...?",
+      {
+        id: 18,
+        question: "Do you support comprehensive, real-time government surveillance if it dramatically reduces crime?",
         options: [
-          { id: "a", label: "No; privacy and individual freedom are non-negotiable.", weight: 10 },
-          { id: "b", label: "I oppose it, but recognize the complexity.", weight: 5 },
-          { id: "c", label: "Reluctantly support only with extremely strict oversight.", weight: 0 },
-          { id: "d", label: "Yes; crime reduction justifies loss of privacy.", weight: -5 },
-          { id: "e", label: "Yes; security is all that matters; privacy is an illusion.", weight: -10 }
+          { text: "No, privacy and individual freedom are non-negotiable, even for safety", weight: 10 },
+          { text: "I oppose it, but I recognize the complexity of the security argument", weight: 5 },
+          { text: "I would reluctantly support it only with extremely strict oversight measures", weight: 0 },
+          { text: "Yes, the resulting dramatic reduction in crime justifies complete loss of privacy", weight: -5 },
+          { text: "Yes, security is the only measure that truly matters; privacy is an illusion", weight: -10 }
         ]
       },
-      { id: 19, text: "When facing a deep personal flaw, when do you stop trying to fix it?",
+      {
+        id: 19,
+        question: "When faced with a deep personal flaw... when do you stop trying to fix it?",
         options: [
-          { id: "a", label: "I never stop; self-improvement is lifelong.", weight: 10 },
-          { id: "b", label: "I stop when effort severely harms mental health.", weight: 5 },
-          { id: "c", label: "I stop when it no longer affects life or career.", weight: 0 },
-          { id: "d", label: "I stop quickly if it is difficult; accept it as 'who I am'.", weight: -5 },
-          { id: "e", label: "I rarely initiate serious attempts to fix fundamental flaws.", weight: -10 }
+          { text: "I never stop; self-improvement is a lifelong, continuous process", weight: 10 },
+          { text: "I stop when the effort begins to severely impact my mental health", weight: 5 },
+          { text: "I stop when the flaw no longer negatively affects my life or career", weight: 0 },
+          { text: "I stop quickly if the flaw is difficult to fix, accepting it as 'who I am'", weight: -5 },
+          { text: "I rarely initiate serious attempts to fix fundamental flaws", weight: -10 }
         ]
       },
-      { id: 20, text: "How easily are you moved to action by the suffering of people you don't personally know...?",
+      {
+        id: 20,
+        question: "How easily are you moved to action or significant worry by the suffering of people you don't personally know?",
         options: [
-          { id: "a", label: "Extremely easily; I feel a strong, immediate responsibility to help.", weight: 10 },
-          { id: "b", label: "Easily; usually donate or raise awareness.", weight: 5 },
-          { id: "c", label: "I am saddened but focus on my immediate circle.", weight: 0 },
-          { id: "d", label: "Momentary sadness; I focus on my own problems.", weight: -5 },
-          { id: "e", label: "Almost no emotional connection or drive to act.", weight: -10 }
+          { text: "Extremely easily; I feel a strong, immediate responsibility to help", weight: 10 },
+          { text: "Easily, though I usually restrict my actions to donating or raising awareness", weight: 5 },
+          { text: "I am saddened, but I prioritize helping those in my immediate circle", weight: 0 },
+          { text: "I feel momentary sadness, but my ability to worry is limited to my own problems", weight: -5 },
+          { text: "I feel almost no emotional connection or drive to act toward distant suffering", weight: -10 }
         ]
       }
     ];
 
-    // --- Buckets and insights ---
-    const CHARACTERTYPES = [
-      { name: 'Rebel Mind', min: 1, max: 35 },
-      { name: 'Shadow Thinker', min: 36, max: 55 },
-      { name: 'Balanced', min: 56, max: 70 },
-      { name: 'Realist', min: 71, max: 85 },
-      { name: 'Pure Soul', min: 86, max: 100 }
-    ];
-    function typeFromScore(score) { const t = CHARACTERTYPES.find(t => score >= t.min && score <= t.max); return t ? t.name : 'Balanced'; }
-    const AIINSIGHTS = {
-      'Pure Soul': "You keep promises even when inconvenient, value consistency, and anchor choices in clear principles. Protect your energy by setting firm boundaries.",
-      'Realist': "You weigh outcomes and fairness, adapting to context without losing your moral center. Keep empathy visible in high‑pressure calls.",
-      'Balanced': "You blend ideals with pragmatism. Decide faster by defining thresholds for action vs. more information.",
-      'Shadow Thinker': "You are perceptive and cautious, noticing hidden trade‑offs. Pair skepticism with trust‑building rituals.",
-      'Rebel Mind': "You challenge norms and move decisively. Add a pre‑commit pause to reduce avoidable friction."
+    // ============= CONFETTI COMPONENT =============
+    const Confetti = () => {
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8', '#feca57'];
+      const pieces = Array.from({ length: 60 }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 3,
+        duration: 3 + Math.random() * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 8 + Math.random() * 8,
+      }));
+
+      return (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          {pieces.map((p) => (
+            <div
+              key={p.id}
+              className="absolute opacity-0 animate-confetti"
+              style={{
+                left: p.left + '%',
+                backgroundColor: p.color,
+                width: p.size + 'px',
+                height: p.size + 'px',
+                animationDelay: p.delay + 's',
+                animationDuration: p.duration + 's',
+                transform: 'rotate(45deg)',
+                borderRadius: '2px',
+              }}
+            />
+          ))}
+        </div>
+      );
     };
 
-    // --- Sub-profiles per type ---
-    const SUBPROFILES = {
-      'Pure Soul': [
-        { min: 92, name: "Guardian Idealist", advice: "Channel ideals into realistic weekly commitments to avoid burnout." },
-        { min: 86, name: "Principled Empath", advice: "Protect empathy with boundaries; say no gracefully when needed." }
-      ],
-      'Realist': [
-        { min: 80, name: "Pragmatic Steward", advice: "Make empathy explicit in tough calls to keep teams aligned." },
-        { min: 71, name: "Balanced Operator", advice: "Pre-commit decision criteria to reduce rethinking." }
-      ],
-      'Balanced': [
-        { min: 66, name: "Adaptive Synthesizer", advice: "Set time-boxes so analysis doesn’t delay action." },
-        { min: 56, name: "Context Navigator", advice: "Write a short decision log to sharpen intuition." }
-      ],
-      'Shadow Thinker': [
-        { min: 50, name: "Skeptical Analyst", advice: "Pair risk-spotting with one explicit trust step per project." },
-        { min: 36, name: "Guarded Observer", advice: "Share assumptions early to avoid misalignment." }
-      ],
-      'Rebel Mind': [
-        { min: 30, name: "Independent Mover", advice: "Add a 10‑second pause ritual before irreversible actions." },
-        { min: 1, name: "Nonconform Catalyst", advice: "Invite one dissenting viewpoint to pressure-test plans." }
-      ]
-    };
-    function subprofileFor(type, score) {
-      const list = SUBPROFILES[type] || [];
-      for (const sp of list) if (score >= sp.min) return sp;
-      return null;
-    }
+    // ============= HOME PAGE COMPONENT =============
+    const HomePage = ({ onStart }) => {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[600px] p-4 md:p-6 text-center animate-fade-in">
+          <div className="mb-6 text-6xl md:text-8xl lg:text-9xl animate-bounce-slow">
+            🎭
+          </div>
 
-    // --- Scoring and report ---
-    function scoreToPercent(rawSum, totalQuestions = 20, minPerQ = -10, maxPerQ = 10, jitterSpan = 6) {
-      const minScore = totalQuestions * minPerQ, maxScore = totalQuestions * maxPerQ, range = maxScore - minScore;
-      let percent = Math.round(((rawSum - minScore) / range) * 100);
-      const jitter = Math.floor(Math.random() * (jitterSpan + 1)) - Math.floor(jitterSpan / 2);
-      return Math.max(1, Math.min(100, percent + jitter));
-    }
-    const PRESETS = {
-      strengths: {
-        'Pure Soul': "Idealistic integrity, empathy, and rule-consistency.",
-        'Realist': "Pragmatic balance, fairness under pressure.",
-        'Balanced': "Cognitive flexibility, situational awareness.",
-        'Shadow Thinker': "Caution, pattern recognition, self-preservation.",
-        'Rebel Mind': "Autonomy, challenging norms, decisive action."
-      },
-      risks: {
-        'Pure Soul': "Rigid standards may drain energy; set realistic boundaries.",
-        'Realist': "Can under-express warmth; schedule explicit empathy checks.",
-        'Balanced': "May hedge too long; define decision deadlines.",
-        'Shadow Thinker': "Trust can lag; add transparent check-ins.",
-        'Rebel Mind': "Impulse risk; add pre-commit pause rituals."
-      }
-    };
-    const RULES = [
-      { when: (s, t) => t === 'Pure Soul' && s <= 72, text: "High ideals with moderate execution — convert values into weekly micro‑habits." },
-      { when: (s, t) => t === 'Rebel Mind' && s >= 45 && s <= 70, text: "Strong independence; add one collaboration checkpoint per project." },
-      { when: (s, t) => t === 'Shadow Thinker' && s >= 35 && s <= 60, text: "Your caution is a strength; pair it with a simple trust ritual." }
-    ];
-    function applyComboRules(score, type) { return RULES.filter(r => r.when(score, type)).map(r => r.text); }
-    function buildReport(score, type) {
-      const sp = subprofileFor(type, score);
-      const notes = applyComboRules(score, type);
-      const strength = PRESETS.strengths[type] || "";
-      const risk = PRESETS.risks[type] || "";
-      const core = AIINSIGHTS[type] || "Your profile balances multiple instincts. Keep iterating deliberately.";
-      const head = sp ? `Sub‑profile: ${sp.name}\nTip: ${sp.advice}\n\n` : "";
-      const ruleBlock = notes.length ? `Notes: ${notes.join(' ')}\n\n` : "";
-      return `${head}${ruleBlock}Strengths: ${strength}\nRisks: ${risk}\n\n${core}`;
-    }
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-3 md:mb-4 leading-tight px-4">
+            Judge
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 animate-gradient">
+             ME
+            </span>
+          </h1>
 
-    // --- Render root ---
-    function render() {
-      if (appState.page === 'home') appRoot.innerHTML = renderHomePage();
-      else if (appState.page === 'quiz') appRoot.innerHTML = renderQuizPage();
-      else if (appState.page === 'loading') appRoot.innerHTML = renderLoadingPage();
-      else if (appState.page === 'result') appRoot.innerHTML = renderResultPage();
-      else if (appState.page === 'about') appRoot.innerHTML = renderAboutPage();
-    }
+          <p className="text-base md:text-xl lg:text-2xl text-gray-600 max-w-md md:max-w-2xl mb-8 md:mb-10 px-4 leading-relaxed">
+            Discover your true moral compass through <span className="font-bold text-purple-600">20 deep psychological questions</span>
+          </p>
 
-    // --- Pages (Upgraded with data-actions and ARIA) ---
-    function renderHomePage() {
-      return `
-        <div class="flex flex-col items-center justify-center p-6 text-center">
-          <div class="glass-card rounded-3xl shadow-2xl p-8 md:p-14 animate-[subtle-pulse_5s_infinite]">
-            <!-- Added tabindex for focus management -->
-            <h1 tabindex="-1" class="text-6xl md:text-7xl font-extrabold tracking-tight leading-tight text-gray-900">
-              Character<span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">Meter</span>
-            </h1>
-            <p class="mt-5 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-              Discover your moral blueprint across 20 real‑world dilemmas and get an instant, science‑style profile you can act on today.
-            </p>
-            <div class="mt-6 flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
-              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">Bias‑aware prompts</div>
-              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-cyan-50 text-cyan-700 border border-cyan-100">Actionable feedback</div>
-              <div class="px-3 py-2 rounded-full text-sm font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">Instant results</div>
+          <button
+            onClick={onStart}
+            className="cta px-8 md:px-12 py-4 md:py-5 rounded-full font-bold text-lg md:text-xl shadow-2xl mobile-touch-target glow-on-hover transform hover:scale-105 active:scale-95 transition-all"
+          >
+            <span className="relative z-10 flex items-center gap-2 md:gap-3">
+              <span className="text-2xl">✨</span>
+              <span>Start Your Journey</span>
+            </span>
+          </button>
+
+          <div className="mt-8 flex items-center justify-center gap-4 md:gap-8 text-sm md:text-base text-gray-500 flex-wrap px-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 md:w-3 md:h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="font-semibold">5 minutes</span>
             </div>
-            <div class="my-8 h-px bg-gradient-to-r from-transparent via-indigo-300 to-transparent"></div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
-              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
-                <span class="text-purple-600 font-black text-4xl block">20</span>
-                <p class="text-sm font-semibold text-purple-700 mt-1">Ethical Scenarios</p>
-                <p class="text-xs text-slate-500 mt-1">Nuanced, real-life choices</p>
-              </div>
-              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
-                <span class="text-blue-600 font-black text-4xl block">1–100</span>
-                <p class="text-sm font-semibold text-blue-700 mt-1">Normalized Score</p>
-                <p class="text-xs text-slate-500 mt-1">Benchmarked distribution</p>
-              </div>
-              <div class="metric bg-white/70 backdrop-blur rounded-2xl p-5 border border-slate-200">
-                <span class="text-slate-700 font-black text-4xl block">5</span>
-                <p class="text-sm font-semibold text-slate-700 mt-1">Archetypes</p>
-                <p class="text-xs text-slate-500 mt-1">Memorable profiles</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl md:text-2xl">🏆</span>
+              <span className="font-semibold">Free forever</span>
             </div>
-            <div class="flex flex-col items-center gap-3">
-              <!-- Replaced <a> with <button> and added data-action -->
-              <button type="button" data-action="start-quiz" class="cta inline-flex items-center justify-center px-10 md:px-14 py-4 rounded-full font-extrabold text-lg md:text-2xl tracking-wide uppercase cursor-pointer select-none">
-                <span class="relative z-10">Start Game</span>
-                <svg class="relative z-10 ml-3 h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M20 12H4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-              <p class="text-xs text-gray-400">Private, client‑side scoring. No registration required.</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xl md:text-2xl">🔒</span>
+              <span className="font-semibold">Anonymous</span>
             </div>
           </div>
-        </div>
-      `;
-    }
 
-    function renderQuizPage() {
-      const qIndex = appState.currentIndex;
-      const q = QUESTIONS[qIndex];
-      const progress = Math.round((qIndex / QUESTIONS.length) * 100);
-      const selected = appState.answers.find(a => a.questionId === q.id);
-      const options = seededShuffle(q.options, USER_SEED + ':' + q.id);
-
-      return `
-        <div class="max-w-3xl mx-auto">
-          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-10">
-            <div class="flex items-center justify-between mb-4">
-              <div class="text-sm text-gray-600">Question ${qIndex + 1} of ${QUESTIONS.length}</div>
-              <div class="w-40">
-                <!-- Added ARIA roles for accessibility -->
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden"
-                     role="progressbar"
-                     aria-valuenow="${progress}"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     aria-label="Quiz progress">
-                  <div class="progress-sheen h-full bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-500 ease-out" style="width:${progress}%"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Added tabindex for focus management -->
-            <h2 tabindex="-1" class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">${q.text}</h2>
-
-            <div class="grid gap-3">
-              ${options.map(opt => {
-                const isSel = selected && selected.optionId === opt.id;
-                const base = "text-left px-4 py-3 rounded-xl border transition";
-                const cls = isSel ? "border-indigo-400 bg-indigo-50 text-indigo-900" : "border-gray-200 bg-white text-gray-800 hover:border-indigo-300 hover:bg-indigo-50";
-                
-                // Replaced onclick with data-action attributes
-                return `
-                  <button type="button" 
-                          data-action="select-option"
-                          data-question-id="${q.id}"
-                          data-option-id="${opt.id}"
-                          data-weight="${opt.weight}"
-                          class="${base} ${cls}">
-                    ${opt.label}
-                  </button>
-                `;
-              }).join('')}
-            </div>
-
-            <div class="mt-8 flex justify-between">
-              <!-- Added data-action -->
-              <button data-action="prev-question" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50">Back</button>
-              <!-- Added data-action -->
-              <button data-action="next-question" id="nextBtn" class="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" ${selected ? "" : "disabled"}>
-                ${qIndex === QUESTIONS.length - 1 ? "Finish" : "Next"}
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderLoadingPage() {
-      return `
-        <div class="flex flex-col items-center justify-center py-16">
-          <div class="glass-card rounded-3xl shadow-2xl p-10 text-center">
-            <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <!-- Added role="alert" for screen readers -->
-            <h3 role="alert" class="text-xl font-semibold text-gray-900">Scoring your choices...</h3>
-            <p class="text-gray-600">Calibrating your moral compass</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderResultPage() {
-      const result = appState.resultData;
-      if (!result) {
-        return `<div class="p-6 text-center">No result found. <button data-action="start-quiz" class="text-indigo-600 underline font-semibold hover:text-indigo-800">Go Home</button></div>`;
-      }
-
-      const shareId = appState.shareId || ensureShareId(result);
-      const typeColor = getColorForType(result.type);
-      const typeColorDark = getDarkColorForType(result.type);
-      const reportText = buildReport(result.score, result.type);
-      const typeEmoji = getEmojiForType(result.type);
-
-      // Calculate additional metrics
-      const percentile = Math.min(98, Math.max(5, Math.round((result.score / 100) * 85 + 12)));
-      const stability = Math.min(100, 40 + Math.round(result.score * 0.4));
-      const empathy = Math.min(100, 30 + Math.round(result.score * 0.5));
-      const principle = Math.min(100, 20 + Math.round(result.score * 0.6));
-
-      // Trigger confetti for high scores
-      if (result.score >= 80) {
-        setTimeout(() => triggerConfetti(), 600);
-      }
-
-      return `
-        <div class="max-w-6xl mx-auto">
-          <!-- Main Result Card -->
-          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-12 result-card mb-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-
-              <!-- Left: Enhanced Gauge Section -->
-              <div class="flex flex-col items-center">
-                <div class="gauge-enhanced" 
-                     style="--value:${result.score}; --color:${typeColor}; --color-dark:${typeColorDark};"
-                     role="meter"
-                     aria-label="Your character score"
-                     aria-valuenow="${result.score}"
-                     aria-valuemin="0"
-                     aria-valuemax="100">
-                  <div class="gauge-content-enhanced">
-                    <div class="emoji-icon-enhanced">${typeEmoji}</div>
-                    <div class="score-number-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">${result.score}</div>
-                    <div class="score-label">Character Score</div>
+          <div className="mt-12 md:mt-16 lg:mt-20 w-full max-w-6xl px-4">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-700 mb-6 md:mb-8">
+              Discover Your Character Type
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-6">
+              {CHARACTER_TYPES.map((type, idx) => (
+                <div 
+                  key={idx}
+                  className="character-badge flex flex-col items-center p-4 md:p-6 glass-card rounded-2xl md:rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer animate-float"
+                  style={{ animationDelay: (idx * 0.1) + 's' }}
+                >
+                  <div className="text-4xl md:text-5xl lg:text-6xl mb-2 md:mb-3">
+                    {type.emoji}
+                  </div>
+                  <div className="text-xs md:text-sm lg:text-base font-bold text-gray-800 text-center leading-tight mb-1">
+                    {type.name}
+                  </div>
+                  <div className="text-xs text-gray-500 text-center">
+                    {type.range[0]}-{type.range[1]}
                   </div>
                 </div>
-                <div class="badge-enhanced mt-8" style="background:${typeColor};">${result.type}</div>
-              </div>
-
-              <!-- Right: Profile Description -->
-              <div class="profile-section-enhanced">
-                <h2 class="profile-title-enhanced">🎯 Your Character Profile</h2>
-                <p class="text-gray-600 text-lg font-medium leading-relaxed">Congratulations on completing the assessment! Here's your personalized character analysis based on your responses.</p>
-
-                <div class="profile-description-enhanced" style="--color:${typeColor};">
-                  ${reportText}
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="mt-8 flex flex-wrap gap-3">
-                  <button data-action="copy-share" data-share-id="${shareId}" class="btn-enhanced btn-gradient-enhanced">
-                    <span>📤</span>
-                    <span>Share Result</span>
-                  </button>
-                  <button data-action="retest" class="btn-enhanced btn-outline-enhanced">
-                    <span>🔄</span>
-                    <span>Retake Test</span>
-                  </button>
-                  <button data-action="premium-ai" class="btn-enhanced btn-success-enhanced">
-                    <span>✨</span>
-                    <span>AI Analysis</span>
-                  </button>
-                </div>
-
-                <p id="ai-premium" class="mt-4 text-sm text-gray-500 hidden" aria-live="polite"></p>
-              </div>
-            </div>
-
-            <!-- Enhanced Stats Section -->
-            <div class="stats-grid-enhanced">
-              <div class="stat-card-enhanced" style="--color:${typeColor}; --color-dark:${typeColorDark};">
-                <div class="stat-title-enhanced">Overall Score</div>
-                <div class="stat-value-enhanced">${result.score}</div>
-                <div class="stat-desc-enhanced">Your character rating</div>
-              </div>
-
-              <div class="stat-card-enhanced" style="--color:#8b5cf6; --color-dark:#7c3aed;">
-                <div class="stat-title-enhanced">Percentile Rank</div>
-                <div class="stat-value-enhanced">${percentile}%</div>
-                <div class="stat-desc-enhanced">Better than ${percentile}% of users</div>
-              </div>
-
-              <div class="stat-card-enhanced" style="--color:#10b981; --color-dark:#059669;">
-                <div class="stat-title-enhanced">Stability Index</div>
-                <div class="stat-value-enhanced">${stability}%</div>
-                <div class="stat-desc-enhanced">Consistency across dilemmas</div>
-              </div>
-
-              <div class="stat-card-enhanced" style="--color:#3b82f6; --color-dark:#2563eb;">
-                <div class="stat-title-enhanced">Empathy Signal</div>
-                <div class="stat-value-enhanced">${empathy}%</div>
-                <div class="stat-desc-enhanced">Prosocial orientation</div>
-              </div>
-
-              <div class="stat-card-enhanced" style="--color:#f59e0b; --color-dark:#d97706;">
-                <div class="stat-title-enhanced">Principle Index</div>
-                <div class="stat-value-enhanced">${principle}%</div>
-                <div class="stat-desc-enhanced">Rule vs outcome preference</div>
-              </div>
-
-              <div class="stat-card-enhanced" style="--color:#ec4899; --color-dark:#db2777;">
-                <div class="stat-title-enhanced">Completion Rate</div>
-                <div class="stat-value-enhanced">100%</div>
-                <div class="stat-desc-enhanced">${result.answers?.length || 20} questions answered</div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
-      `;
-    }
 
-    // Helper function: Get color for character type
-    function getColorForType(type) {
-      const colors = {
-        'Pure Soul': '#10b981',
-        'Realist': '#3b82f6',
-        'Balanced': '#6366f1',
-        'Shadow Thinker': '#475569'
-      };
-      return colors[type] || '#8b5cf6';
-    }
-
-    // Helper function: Get dark color variant
-    function getDarkColorForType(type) {
-      const colors = {
-        'Pure Soul': '#059669',
-        'Realist': '#2563eb',
-        'Balanced': '#4f46e5',
-        'Shadow Thinker': '#334155'
-      };
-      return colors[type] || '#7c3aed';
-    }
-
-    // Confetti animation function
-    function triggerConfetti() {
-      const colors = ['#6366f1', '#8b5cf6', '#22d3ee', '#10b981', '#f59e0b', '#ec4899'];
-      const confettiCount = 60;
-
-      for (let i = 0; i < confettiCount; i++) {
-        setTimeout(() => {
-          const confetti = document.createElement('div');
-          confetti.className = 'confetti';
-          confetti.style.left = Math.random() * 100 + '%';
-          confetti.style.top = '-20px';
-          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-          confetti.style.animationDelay = Math.random() * 0.5 + 's';
-          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-          document.body.appendChild(confetti);
-
-          setTimeout(() => confetti.remove(), 3500);
-        }, i * 25);
-      }
-    }
-
-    // Toast notification function
-    function showToast(message, emoji = '✅') {
-      const toast = document.createElement('div');
-      toast.className = 'toast-notification';
-      toast.innerHTML = `<span style="font-size: 1.5rem;">${emoji}</span><span>${message}</span>`;
-      document.body.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.animation = 'fadeInUp 0.3s ease-out reverse';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    function renderAboutPage() {
-      return `
-        <div class="max-w-3xl mx-auto">
-          <div class="glass-card rounded-3xl shadow-2xl p-6 md:p-10">
-            <!-- Added tabindex for focus management -->
-            <h2 tabindex="-1" class="text-2xl font-bold text-gray-900">About</h2>
-            <p class="text-gray-700 mt-2">
-              CharacterMeter maps your choices across common dilemmas to a normalized 1–100 score and a memorable archetype.
-            </p>
-            <div class="bg-white/80 backdrop-blur p-6 rounded-2xl shadow-xl border border-gray-100 mt-6">
-              <h3 class="text-lg font-semibold text-emerald-600">Consent & Privacy</h3>
-              <p class="text-gray-700 mt-2">
-                Your answers are scored locally in your browser. If you share a link, only your final score and type are saved.
-                You can delete stored results anytime by clearing your browser data.
+          <div className="mt-12 md:mt-16 max-w-2xl px-4">
+            <div className="glass-card p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl">
+              <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 md:mb-4 flex items-center justify-center gap-2">
+                <span className="text-2xl">💡</span>
+                <span>How It Works</span>
+              </h3>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                Answer 20 carefully crafted questions about ethics, morality, and decision-making. 
+                Each response is weighted and normalized to calculate your unique character score (1-100), 
+                revealing your moral archetype.
               </p>
             </div>
           </div>
         </div>
-      `;
-    }
+      );
+    };
 
-    // This function is not used in renders, but kept for logic
-    function badgeClass(type) {
-      if (type === 'Pure Soul') return 'bg-emerald-600';
-      if (type === 'Realist') return 'bg-blue-600';
-      if (type === 'Balanced') return 'bg-indigo-600';
-      if (type === 'Shadow Thinker') return 'bg-slate-700';
-      return 'bg-fuchsia-600'; // Rebel Mind
-    }
+    // ============= QUIZ PAGE COMPONENT =============
+    const QuizPage = ({ onComplete }) => {
+      const [currentIndex, setCurrentIndex] = useState(0);
+      const [answers, setAnswers] = useState({});
+      const [slideDirection, setSlideDirection] = useState('right');
+      const [touchStart, setTouchStart] = useState(null);
+      const [touchEnd, setTouchEnd] = useState(null);
+      const [showHint, setShowHint] = useState(true);
 
-    // --- Helper function for result emoji ---
-    function getEmojiForType(type) {
-      switch (type) {
-        case 'Pure Soul': return '😇';
-        case 'Realist': return '⚖️';
-        case 'Balanced': return '☯️';
-        case 'Shadow Thinker': return '🕵️';
-        case 'Rebel Mind': return '⚡️';
-        default: return '🧠';
-      }
-    }
+      const current = QUIZ_DATA[currentIndex];
+      const progress = Math.round(((currentIndex + 1) / QUIZ_DATA.length) * 100);
+      const isLastQuestion = currentIndex === QUIZ_DATA.length - 1;
+      const hasAnswer = answers[current.id] !== undefined;
 
-    // --- Quiz logic ---
-    function selectOption(questionId, optionId, weight) {
-      const idx = appState.answers.findIndex(a => a.questionId === questionId);
-      const entry = { questionId, optionId, weight };
-      if (idx >= 0) appState.answers[idx] = entry; else appState.answers.push(entry);
-      render(); // refresh highlight and button state
-    }
-    function nextQuestion() {
-      const qIndex = appState.currentIndex;
-      const q = QUESTIONS[qIndex];
-      const answered = appState.answers.some(a => a.questionId === q.id);
-      if (!answered) return;
-      if (qIndex < QUESTIONS.length - 1) {
-        appState.currentIndex++;
-        render();
-      } else {
-        const totalRaw = appState.answers.reduce((sum, a) => sum + a.weight, 0);
-        const finalPercent = scoreToPercent(totalRaw, QUESTIONS.length);
-        const finalType = typeFromScore(finalPercent);
-        appState.resultData = { score: finalPercent, type: finalType, ts: Date.now() };
-        setPage('loading');
-        setTimeout(() => setPage('result'), 1200);
-      }
-    }
-    function prevQuestion() {
-      if (appState.currentIndex > 0) { appState.currentIndex--; render(); }
-      else setPage('home');
-    }
-    function retest() {
-      appState.currentIndex = 0; appState.answers = []; appState.resultData = null; appState.shareId = null;
-      history.replaceState(null, '', location.pathname); setPage('quiz');
-    }
+      useEffect(() => {
+        if (currentIndex > 0) {
+          setShowHint(false);
+        }
+      }, [currentIndex]);
 
-    // --- Share / persistence ---
-    function ensureShareId(resultObj) {
-      if (appState.shareId) return appState.shareId;
-      const id = Math.random().toString(36).slice(2, 8);
-      localStorage.setItem('cm:' + id, JSON.stringify(resultObj));
-      appState.shareId = id; return id;
-    }
+      const handleSelect = (weight) => {
+        setAnswers(prev => ({ ...prev, [current.id]: weight }));
+        // Haptic feedback
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
+      };
 
-    /**
-     * Upgraded copyShare to provide feedback on the button itself.
-     * @param {string} id - The share ID.
-     * @param {HTMLElement} buttonElement - The button that was clicked.
-     */
-    function copyShare(id, buttonElement) {
-      const url = location.origin + location.pathname + '?share=' + id;
-      
-      // Use clipboard API if available
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(() => {
-          // Provide feedback on the button
-          const originalText = buttonElement.textContent;
-          buttonElement.textContent = 'Copied!';
-          buttonElement.disabled = true;
-          setTimeout(() => {
-            buttonElement.textContent = originalText;
-            buttonElement.disabled = false;
-          }, 2000);
-        }).catch(() => {
-          // Fallback for clipboard failure
-          prompt('Copy this link:', url);
-        });
-      } else {
-        // Fallback for older browsers
-        prompt('Copy this link:', url);
-      }
-    }
+      const handleNext = () => {
+        if (!hasAnswer) return;
 
+        if (isLastQuestion) {
+          // Calculate final score
+          const totalScore = Object.values(answers).reduce((sum, w) => sum + w, 0);
+          const minPossible = -200; // 20 questions × -10
+          const maxPossible = 200;  // 20 questions × 10
+          const normalized = ((totalScore - minPossible) / (maxPossible - minPossible)) * 100;
+          const randomness = (Math.random() * 6) - 3; // ±3 points
+          const finalScore = Math.max(1, Math.min(100, Math.round(normalized + randomness)));
 
-    // --- Optional AI premium stub ---
-    async function handlePremiumAI() {
-      const el = document.getElementById('ai-premium'); if (!el) return;
-      el.classList.remove('hidden');
-      el.textContent = "Generating deeper insights...";
-      setTimeout(() => {
-        const r = appState.resultData; if (!r) return;
-        el.textContent = `Personalized analysis for ${r.type}:
-  1) Track one value‑aligned decision daily.
-  2) Add a weekly reflection to reduce blind spots.
-  3. Choose one micro‑habit to reinforce strengths.`;
-      }, 1200);
-    }
+          onComplete(finalScore);
+        } else {
+          setSlideDirection('left');
+          setTimeout(() => setCurrentIndex(prev => prev + 1), 50);
+        }
+      };
 
-    // --- Start the app ---
-    // Replaces the old onload="initApp()"
-    window.addEventListener('DOMContentLoaded', initApp);
+      const handlePrev = () => {
+        if (currentIndex === 0) return;
+        setSlideDirection('right');
+        setTimeout(() => setCurrentIndex(prev => prev - 1), 50);
+      };
 
+      // Touch handlers for swipe gestures
+      const minSwipeDistance = 50;
+
+      const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+      };
+
+      const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+      };
+
+      const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && hasAnswer) {
+          handleNext();
+        }
+        if (isRightSwipe && currentIndex > 0) {
+          handlePrev();
+        }
+      };
+
+      return (
+        <div className="flex flex-col h-full max-w-4xl mx-auto p-3 md:p-6">
+          {/* Progress Bar */}
+          <div className="mb-4 md:mb-6 animate-slide-up">
+            <div className="flex justify-between items-center text-xs md:text-sm font-semibold text-gray-700 mb-2 px-1">
+              <span className="flex items-center gap-1 md:gap-2">
+                <span className="hidden sm:inline text-gray-500">Question</span>
+                <span className="text-purple-600 text-lg md:text-xl font-bold">{currentIndex + 1}</span>
+                <span className="text-gray-400 text-base">/</span>
+                <span className="text-gray-500 text-base">{QUIZ_DATA.length}</span>
+              </span>
+              <span className="text-purple-600 font-bold text-base md:text-lg flex items-center gap-1">
+                <span>{progress}%</span>
+                <span className="hidden sm:inline text-xs text-gray-500">Complete</span>
+              </span>
+            </div>
+            <div className="h-3 md:h-3.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 transition-all duration-500 ease-out rounded-full progress-pulse progress-bar-glow"
+                style={{ width: progress + '%' }}
+              />
+            </div>
+          </div>
+
+          {/* Question Card with Swipe Support */}
+          <div
+            className="flex-1 overflow-hidden mb-4 md:mb-6"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <div
+              key={current.id}
+              className={`glass-card-dark p-5 md:p-8 lg:p-10 rounded-3xl shadow-2xl h-full overflow-y-auto transition-all duration-500 ${
+                slideDirection === 'left' ? 'animate-slide-in-left' : 'animate-slide-in-right'
+              }`}
+            >
+              {/* Question Header */}
+              <div className="flex justify-between items-start mb-5 md:mb-7">
+                <div className="bg-gradient-to-r from-purple-600 to-blue-500 text-white px-4 md:px-5 py-2 rounded-full text-sm md:text-base font-bold shadow-lg flex items-center gap-2">
+                  <span className="text-lg">📝</span>
+                  <span>Q{currentIndex + 1}</span>
+                </div>
+                <div className="text-4xl md:text-5xl animate-float">
+                  {CHARACTER_TYPES[currentIndex % 5].emoji}
+                </div>
+              </div>
+
+              {/* Question Text */}
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 md:mb-10 leading-relaxed">
+                {current.question}
+              </h2>
+
+              {/* Options */}
+              <div className="space-y-3 md:space-y-4">
+                {current.options.map((option, idx) => {
+                  const isSelected = answers[current.id] === option.weight;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelect(option.weight)}
+                      className={`w-full text-left p-4 md:p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 mobile-touch-target transform ${
+                        isSelected
+                          ? 'border-purple-500 bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-2xl scale-[1.02] md:scale-105 option-selected'
+                          : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-xl text-gray-700 active:scale-[0.98]'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3 md:gap-4">
+                        <div className={`flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                          isSelected ? 'border-white bg-white scale-110' : 'border-gray-300 bg-white'
+                        }`}>
+                          {isSelected && (
+                            <svg className="w-5 h-5 md:w-6 md:h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-sm md:text-base lg:text-lg leading-relaxed flex-1 font-medium">
+                          {option.text}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-3 md:gap-4 px-1">
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className={`flex-1 md:flex-initial md:w-40 px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg transition-all duration-300 border-2 mobile-touch-target ${
+                currentIndex === 0
+                  ? 'opacity-40 cursor-not-allowed bg-gray-100 border-gray-200 text-gray-400'
+                  : 'bg-white border-purple-400 text-gray-800 hover:bg-purple-50 hover:shadow-xl hover:border-purple-500 active:scale-95 transform hover:scale-105'
+              }`}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <span className="text-xl">←</span>
+                <span className="hidden sm:inline">Previous</span>
+                <span className="sm:hidden">Prev</span>
+              </span>
+            </button>
+
+            <button
+              onClick={handleNext}
+              disabled={!hasAnswer}
+              className={`flex-1 md:w-64 cta px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg transition-all duration-300 mobile-touch-target transform hover:scale-105 active:scale-95 ${
+                !hasAnswer ? 'opacity-50 cursor-not-allowed' : 'glow-on-hover'
+              }`}
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {isLastQuestion ? (
+                  <>
+                    <span className="text-xl">🏆</span>
+                    <span>Get Result</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Next</span>
+                    <span className="text-xl">→</span>
+                  </>
+                )}
+              </span>
+            </button>
+          </div>
+
+          {/* Swipe Hint for Mobile */}
+          {showHint && (
+            <div className="md:hidden text-center mt-4 text-xs text-gray-400 flex items-center justify-center gap-2 swipe-hint animate-fade-in">
+              <span>👈</span>
+              <span>Swipe to navigate</span>
+              <span>👉</span>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // ============= RESULT PAGE COMPONENT =============
+    const ResultPage = ({ score, onRestart }) => {
+      const [displayScore, setDisplayScore] = useState(0);
+      const [showConfetti, setShowConfetti] = useState(false);
+      const [showShare, setShowShare] = useState(false);
+      const [isRevealed, setIsRevealed] = useState(false);
+
+      const characterType = CHARACTER_TYPES.find(
+        type => score >= type.range[0] && score <= type.range[1]
+      );
+
+      useEffect(() => {
+        // Start confetti
+        setShowConfetti(true);
+
+        // Animate score counting up
+        const duration = 2500;
+        let start;
+        const animate = (timestamp) => {
+          if (!start) start = timestamp;
+          const elapsed = timestamp - start;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setDisplayScore(Math.floor(eased * score));
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            setIsRevealed(true);
+            // Haptic feedback on completion
+            if (navigator.vibrate) {
+              navigator.vibrate([100, 50, 100, 50, 200]);
+            }
+          }
+        };
+        requestAnimationFrame(animate);
+
+        // Stop confetti after 5 seconds
+        const confettiTimeout = setTimeout(() => setShowConfetti(false), 5000);
+
+        return () => clearTimeout(confettiTimeout);
+      }, [score]);
+
+      const handleShare = (platform) => {
+        const text = `I scored ${score}/100 on CharacterMeter! I'm a ${characterType.name} ${characterType.emoji}. What's your character type?`;
+        const url = window.location.origin;
+
+        // Haptic feedback
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
+
+        switch(platform) {
+          case 'copy':
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(`${text}\n\n${url}`);
+            }
+            alert('✅ Link copied to clipboard!');
+            break;
+          case 'whatsapp':
+            window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+            break;
+          case 'twitter':
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            break;
+          case 'facebook':
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`, '_blank');
+            break;
+          case 'linkedin':
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+            break;
+        }
+        setShowShare(false);
+      };
+
+      return (
+        <div className="flex flex-col items-center p-4 md:p-8 text-center min-h-[700px] relative overflow-hidden animate-fade-in">
+          {showConfetti && <Confetti />}
+
+          {/* Header */}
+          <div className="mb-8 md:mb-12 animate-slide-up z-10">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 mb-3 md:mb-4 leading-tight">
+              Your Character <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500">Revealed</span>
+            </h1>
+            <p className="text-sm md:text-lg text-gray-600">
+              Based on your moral compass and ethical framework
+            </p>
+          </div>
+
+          {/* Animated Score Circle */}
+          <div className="relative mb-10 md:mb-14 animate-scale-in z-10">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 rounded-full blur-3xl opacity-40 animate-pulse"></div>
+
+            {/* Main circle */}
+            <div className={`relative result-circle w-72 h-72 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] rounded-full flex flex-col items-center justify-center shadow-2xl bg-gradient-to-br ${characterType.color} overflow-hidden`}>
+              {/* Outer progress ring */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90 z-0">
+                <circle
+                  cx="50%"
+                  cy="50%"
+                  r="42%"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="12"
+                />
+                <circle
+                  cx="50%"
+                  cy="50%"
+                  r="42%"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="12"
+                  strokeDasharray={`${2 * Math.PI * 150}`}
+                  strokeDashoffset={`${2 * Math.PI * 150 * (1 - displayScore / 100)}`}
+                  className="transition-all duration-2000 ease-out"
+                  strokeLinecap="round"
+                  style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' }}
+                />
+              </svg>
+
+              {/* Inner content */}
+              <div className="relative z-10 flex flex-col items-center">
+                {/* Score number */}
+                <div className="text-8xl md:text-9xl lg:text-[10rem] font-black text-white mb-2 md:mb-4 drop-shadow-2xl">
+                  {String(displayScore).split('').map((digit, i) => (
+                    <span key={i} className="score-digit inline-block">
+                      {digit}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Emoji */}
+                <div className="text-6xl md:text-7xl lg:text-8xl mb-2 md:mb-3 animate-bounce-in" style={{ animationDelay: '1.5s' }}>
+                  {characterType.emoji}
+                </div>
+
+                {/* Character name */}
+                <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-white/95 px-4 mb-2 drop-shadow-lg">
+                  {characterType.name}
+                </div>
+
+                {/* Score range */}
+                <div className="text-sm md:text-base lg:text-lg text-white/75 font-medium">
+                  Score Range: {characterType.range[0]}-{characterType.range[1]}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Character Description Card */}
+          <div className="w-full max-w-3xl mb-8 md:mb-12 animate-slide-up z-10" style={{ animationDelay: '0.3s' }}>
+            <div className={`glass-card-dark p-6 md:p-10 rounded-3xl shadow-2xl border-2 ${characterType.borderColor}`}>
+              <div className="flex items-center justify-center gap-3 mb-5 md:mb-6">
+                <span className="text-3xl md:text-4xl">{characterType.icon}</span>
+                <h3 className="text-xl md:text-3xl font-bold text-gray-900">
+                  Character Insight
+                </h3>
+              </div>
+              <p className={`${characterType.textColor} text-base md:text-xl leading-relaxed italic font-medium mb-6`}>
+                "{characterType.description}"
+              </p>
+
+              {/* Traits */}
+              <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                {characterType.traits.map((trait, idx) => (
+                  <span 
+                    key={idx}
+                    className={`${characterType.badge} ${characterType.textColor} px-4 md:px-5 py-2 md:py-2.5 rounded-full text-sm md:text-base font-semibold shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-default`}
+                  >
+                    {trait}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="w-full max-w-3xl grid grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-12 px-2 z-10">
+            <div className="glass-card p-4 md:p-8 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-shadow glow-on-hover">
+              <div className="text-4xl md:text-6xl font-black text-purple-600 mb-2">
+                {score}
+              </div>
+              <div className="text-xs md:text-base text-gray-600 font-semibold">Character Score</div>
+            </div>
+            <div className="glass-card p-4 md:p-8 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-shadow glow-on-hover">
+              <div className="text-4xl md:text-6xl font-black text-blue-600 mb-2">
+                {QUIZ_DATA.length}
+              </div>
+              <div className="text-xs md:text-base text-gray-600 font-semibold">Questions</div>
+            </div>
+            <div className="glass-card p-4 md:p-8 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-shadow glow-on-hover">
+              <div className="text-4xl md:text-6xl mb-2">{characterType.emoji}</div>
+              <div className="text-xs md:text-base text-gray-600 font-semibold">Character Type</div>
+            </div>
+          </div>
+
+          {/* Share Section */}
+          <div className="w-full max-w-md mb-8 z-10">
+            <button
+              onClick={() => setShowShare(!showShare)}
+              className="w-full cta px-8 py-4 md:py-5 rounded-2xl font-bold text-base md:text-lg shadow-2xl mobile-touch-target glow-on-hover transform hover:scale-105 active:scale-95 transition-all"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2 md:gap-3">
+                <span className="text-2xl">📱</span>
+                <span>Share Your Result</span>
+              </span>
+            </button>
+
+            {showShare && (
+              <div className="mt-4 md:mt-6 grid grid-cols-2 gap-3 md:gap-4 mobile-menu-open">
+                <button
+                  onClick={() => handleShare('whatsapp')}
+                  className="bg-green-500 hover:bg-green-600 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-semibold shadow-xl active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">📱</span>
+                  <span>WhatsApp</span>
+                </button>
+                <button
+                  onClick={() => handleShare('twitter')}
+                  className="bg-blue-400 hover:bg-blue-500 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-semibold shadow-xl active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">🐦</span>
+                  <span>Twitter</span>
+                </button>
+                <button
+                  onClick={() => handleShare('facebook')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-semibold shadow-xl active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">📘</span>
+                  <span>Facebook</span>
+                </button>
+                <button
+                  onClick={() => handleShare('linkedin')}
+                  className="bg-blue-700 hover:bg-blue-800 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-semibold shadow-xl active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">💼</span>
+                  <span>LinkedIn</span>
+                </button>
+                <button
+                  onClick={() => handleShare('copy')}
+                  className="col-span-2 bg-gray-700 hover:bg-gray-800 text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-semibold shadow-xl active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <span className="text-xl">📋</span>
+                  <span>Copy Link</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full max-w-xl px-2 z-10">
+            <button
+              onClick={onRestart}
+              className="flex-1 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-base md:text-lg border-2 border-purple-400 text-gray-800 bg-white hover:bg-purple-50 hover:shadow-xl hover:border-purple-500 active:scale-95 transition-all mobile-touch-target transform hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <span className="text-xl">↺</span>
+              <span>Retake Test</span>
+            </button>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex-1 cta px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-base md:text-lg mobile-touch-target glow-on-hover transform hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <span className="text-xl">🏆</span>
+                <span>View Leaderboard</span>
+              </span>
+            </button>
+          </div>
+
+          {/* Fun fact */}
+          <div className="mt-8 md:mt-12 text-xs md:text-sm text-gray-500 italic max-w-md z-10">
+            <p>
+              💡 Your score is calculated using a weighted normalization algorithm across 20 moral and ethical questions.
+            </p>
+          </div>
+        </div>
+      );
+    };
+
+    // ============= MAIN APP COMPONENT =============
+    const App = () => {
+      const [page, setPage] = useState('home');
+      const [finalScore, setFinalScore] = useState(null);
+      const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+      const handleStart = () => {
+        setPage('quiz');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const handleComplete = (score) => {
+        setFinalScore(score);
+        setPage('result');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const handleRestart = () => {
+        setPage('home');
+        setFinalScore(null);
+        setMobileMenuOpen(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const navigateTo = (newPage) => {
+        setPage(newPage);
+        setMobileMenuOpen(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      return (
+        <div className="min-h-screen">
+          {/* Header */}
+          <header className="sticky top-0 z-40 glass-card shadow-xl border-b border-gray-200/50">
+            <nav className="max-w-7xl mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
+              <button 
+                onClick={handleRestart}
+                className="text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-900 hover:text-purple-600 transition-colors flex items-center gap-2"
+              >
+                <span className="text-2xl md:text-3xl">🎭</span>
+                <span>
+                  Character
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
+                    Meter
+                  </span>
+                </span>
+              </button>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex gap-2 lg:gap-3">
+                <a
+                  href="index.html"
+                  className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full text-sm lg:text-base font-semibold transition-all mobile-touch-target ${
+                    page === 'home'
+                      ? 'bg-purple-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600'
+                  }`}
+                >
+                  Home
+                </a>
+                {finalScore && (
+                  <button
+                    onClick={() => navigateTo('result')}
+                    className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full text-sm lg:text-base font-semibold transition-all mobile-touch-target ${
+                      page === 'result'
+                        ? 'bg-purple-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600'
+                    }`}
+                  >
+                    Result
+                  </button>
+                )}
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 active:scale-95 transition-all"
+              >
+                <div className="w-6 h-5 flex flex-col justify-between">
+                  <span className={`w-full h-0.5 bg-gray-800 rounded transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                  <span className={`w-full h-0.5 bg-gray-800 rounded transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
+                  <span className={`w-full h-0.5 bg-gray-800 rounded transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+                </div>
+              </button>
+            </nav>
+
+            {/* Mobile Menu Dropdown */}
+            {mobileMenuOpen && (
+              <div className="md:hidden glass-card border-t border-gray-200/50 shadow-xl mobile-menu-open">
+                <div className="px-4 py-3 space-y-2">
+                  <a
+                    href="index.html"
+                    className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-all ${
+                      page === 'home' 
+                        ? 'bg-purple-600 text-white shadow-md' 
+                        : 'text-gray-700 hover:bg-purple-50'
+                    }`}
+                  >
+                    🏠 Home
+                  </a>
+                  {finalScore && (
+                    <button
+                      onClick={() => navigateTo('result')}
+                      className={`w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-all ${
+                        page === 'result' 
+                          ? 'bg-purple-600 text-white shadow-md' 
+                          : 'text-gray-700 hover:bg-purple-50'
+                      }`}
+                    >
+                      🏆 Result
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </header>
+
+          {/* Main Content */}
+          <main className="max-w-7xl mx-auto p-2 md:p-4 lg:p-6">
+            <div className="glass-card rounded-3xl shadow-2xl p-4 md:p-6 lg:p-10 min-h-[calc(100vh-120px)]">
+              {page === 'home' && <HomePage onStart={handleStart} />}
+              {page === 'quiz' && <QuizPage onComplete={handleComplete} />}
+              {page === 'result' && finalScore && <ResultPage score={finalScore} onRestart={handleRestart} />}
+            </div>
+          </main>
+
+          {/* Footer */}
+          <footer className="max-w-7xl mx-auto px-4 py-6 md:py-8 text-center text-sm text-gray-500">
+            <p>
+              Made with ❤️ by CharacterMeter Team • 
+              <a href="#" className="text-purple-600 hover:text-purple-700 ml-1">Privacy Policy</a> • 
+              <a href="#" className="text-purple-600 hover:text-purple-700 ml-1">Terms of Service</a>
+            </p>
+            <p className="mt-2 text-xs">
+              © 2025 CharacterMeter. All rights reserved.
+            </p>
+          </footer>
+        </div>
+      );
+    };
+
+    // ============= RENDER APP =============
+    const root = ReactDOM.createRoot(document.getElementById('app'));
+    root.render(<App />);
   </script>
 </body>
 </html>
